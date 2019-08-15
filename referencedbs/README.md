@@ -1,7 +1,7 @@
 # Reference databases #
  [number] refers to the *number of files* to download. 
  
- [abbreviated code] (e.g. gbvrl) each correspond to a particular sequence database, called **Genbank divisions**. For example, these are the codes for the Genbank viral (gvrl) and phage (gvphg) databases. The descriptions for each of these Genbank divisions can be found in the following two URLs: 
+ gb[abbreviated code] (e.g. gbvrl) each correspond to a particular sequence database, called **Genbank divisions**. For example, these are the codes for the Genbank viral (vrl) and phage (phg) databases. The descriptions for each of these Genbank divisions can be found in the following two URLs: 
 
 https://www.ncbi.nlm.nih.gov/genbank/htgs/divisions/
 
