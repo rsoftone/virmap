@@ -5,4 +5,6 @@ Where do I find what I'm looking for?
 
 **More background information** - all this goes into /docs
 
+**Progress and critical issues tracking** - check out /worklogs
+
 **Docker container** - a Dockerfile is at the root of this repository
