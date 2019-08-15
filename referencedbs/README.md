@@ -13,15 +13,15 @@ ftp://ftp.ncbi.nih.gov/genbank/
 
 ## Comprehensive Viral Database ##
 
-Genbank Divisions used
+Genbank Divisions used:
 
-gbvrl (33 files as at June 2019, ~3GB total size)
+gbvrl (33 files as at June 2019, ~3 GB total size)
 
-gbphage (n files as at June 2019, ~N_GB total size)
+gbphage (3 files as at June 2019, ~0.4 GB total size)
 
 ## Comprehensive General Purpose Database ##
 
-Genbank Divisions used
+Genbank Divisions used:
 
 330 gbbct 
 
