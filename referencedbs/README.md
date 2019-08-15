@@ -71,17 +71,17 @@ gbpln (156 files as at June 2019, ~15GB total size)
 
 gbpri (34 files as at June 2019, ~5GB total size)
 
-30 gbrod
+gbrod (17 files as at June 2019, ~2GB total size)
 
-20 gbsts
+gbsts (11 files as at June 2019, ~0.2GB total size)
 
-9 gbsyn
+gbsyn (27 files as at June 2019, ~3GB total size)
 
-1 gbuna
+gbuna (1 file as at June 2019, ~0.001GB total size)
 
-47 gbvrl VIRUS – Separate processing also 
+gbvrl VIRUS – Separate processing also (33 files as at June 2019, ~3GB total size)
 
-64 gbvrt
+gbvrt (109 files as at June 2019, ~12GB total size)
 
 ## Genbank Divisons not used ##
 
