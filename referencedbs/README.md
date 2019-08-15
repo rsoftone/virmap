@@ -61,15 +61,15 @@ gbhtc (8 files as at June 2019, ~0.5GB total size)
 
 gbinv (71 files as at June 2019, ~3GB total size)
 
-39 gbmam 
+gbmam (33 files as at June 2019, ~3.3GB total size)
 
-283 gbpat
+gbpat (197 files as at June 2019, ~9GB total size)
 
-3 gbphg PHAGE – Separate processing also 
+gbphg PHAGE – Separate processing also (3 files as at June 2019, ~0.5GB total size)
 
-143 gbpln
+gbpln (156 files as at June 2019, ~15GB total size)
 
-55 gbpri
+gbpri (34 files as at June 2019, ~5GB total size)
 
 30 gbrod
 
