@@ -51,13 +51,13 @@ gbphage (3 files as at June 2019, ~0.4 GB total size)
 
 Genbank Divisions used:
 
-gbbct (348 files as at June 2019, ~35 GB total size)
+gbbct (348 files as at June 2019, ~35GB total size)
 
 gbcon (207 files as at June 2019, ~2GB total size)
 
-95 gbenv 
+gbenv (57 files as at June 2019, ~2GB total size)
 
-15 gbhtc 
+gbhtc (8 files as at June 2019, ~0.5GB total size) 
 
 152 gbinv 
 
