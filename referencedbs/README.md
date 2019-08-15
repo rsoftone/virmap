@@ -26,7 +26,9 @@ Genbank Divisions used
 
 283 gbpat
 
-3 gbphg PHAGE – Separate processing also 143 gbpln
+3 gbphg PHAGE – Separate processing also 
+
+143 gbpln
 
 55 gbpri
 
