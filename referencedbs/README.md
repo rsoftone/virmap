@@ -4,7 +4,7 @@
  
  (e.g. gbvrl) 
  
- each correspond to a particular sequence database, called **Genbank divisions**. 
+ each [abbreviated code] correspond to a particular sequence database, called **Genbank divisions**. 
  
  The GenBank database is divided into 18 divisions:
 
@@ -51,9 +51,9 @@ gbphage (3 files as at June 2019, ~0.4 GB total size)
 
 Genbank Divisions used:
 
-330 gbbct 
+gbbct (348 files as at June 2019, ~35 GB total size)
 
-356 gbcon 
+gbcon (207 files as at June 2019, ~2GB total size)
 
 95 gbenv 
 
