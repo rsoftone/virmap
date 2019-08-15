@@ -59,7 +59,7 @@ gbenv (57 files as at June 2019, ~2GB total size)
 
 gbhtc (8 files as at June 2019, ~0.5GB total size) 
 
-152 gbinv 
+gbinv (71 files as at June 2019, ~3GB total size)
 
 39 gbmam 
 
