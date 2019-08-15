@@ -1,6 +1,10 @@
 # Reference databases #
  
- gb[abbreviated code] (e.g. gbvrl) each correspond to a particular sequence database, called **Genbank divisions**. For example, these are the codes for the Genbank viral (vrl) and phage (phg) databases. 
+ gb[abbreviated code] 
+ 
+ (e.g. gbvrl) 
+ 
+ each correspond to a particular sequence database, called **Genbank divisions**. 
  
  The GenBank database is divided into 18 divisions:
 
