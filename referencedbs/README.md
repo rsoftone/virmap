@@ -39,6 +39,15 @@ The Genbank divisions can be downloaded here:
 
 ftp://ftp.ncbi.nih.gov/genbank/
 
+```
+#
+# Command line to retrieve the list of files under ftp://ftp.ncbi.nlm.nih.gov/genbank
+# 
+
+wget -
+
+```
+
 ## Comprehensive Viral Database ##
 
 Genbank Divisions used:
