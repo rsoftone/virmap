@@ -69,7 +69,7 @@ gbphage (3 files as at June 2019, ~0.4 GB total size)
 
 Genbank Divisions used:
 
-**gbbct** (348 files as at June 2019, ~35GB total size)
+**gbbct** (348 files as at June 2019, ~41GB total size)
 
 ```
 grep gbbct .listing | sed 's/.*gbbct/gbbct/g' | sed 's/\n//g' > gbbct.txt
@@ -114,6 +114,20 @@ gbuna (1 file as at June 2019, ~0.001GB total size)
 gbvrl VIRUS – Separate processing also (33 files as at June 2019, ~3GB total size)
 
 **gbvrt** (109 files as at June 2019, ~12GB total size)
+
+```
+grep gbvrt .listing | sed 's/.*gbvrt/gbvrt/g' | sed 's/\n//g' > gbvrt.txt
+dos2unix gbvrt.txt
+
+while  read -r aseq
+do
+    ~/.aspera/connect/bin/ascp \
+    -i ~/.aspera/connect/etc/asperaweb_id_dsa.openssh \
+    -k1 -Tr -l800m \
+    anonftp@ftp.ncbi.nlm.nih.gov:/genbank/${aseq} /destinationDir/.  
+
+done < gbvrt.txt 
+```
 
 ## Genbank Divisons not used ##
 
