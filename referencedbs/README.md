@@ -37,7 +37,7 @@ https://www.ncbi.nlm.nih.gov/Sitemap/samplerecord.html#GenBankDivisionB
 
 ## Aspera (IBM) ascp utility ##
 
-Accelerated protocols for downloading files are supported by NCBI: download ascp from this link:
+Accelerated protocols for downloading files are supported by NCBI. Download ascp from this link:
 
 https://downloads.asperasoft.com/connect2/
 
