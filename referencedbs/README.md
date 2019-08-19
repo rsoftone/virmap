@@ -35,7 +35,16 @@ https://www.ncbi.nlm.nih.gov/genbank/htgs/divisions/
 
 https://www.ncbi.nlm.nih.gov/Sitemap/samplerecord.html#GenBankDivisionB
 
-The Genbank divisions can be downloaded here:
+## Aspera (IBM) ascp utility ##
+
+Accelerated protocols for downloading files are supported by NCBI: download ascp from this link:
+
+https://downloads.asperasoft.com/connect2/
+
+
+## GenBank FTP Server ##
+
+The Genbank divisions are at this FTP server:
 
 ftp://ftp.ncbi.nih.gov/genbank/
 
