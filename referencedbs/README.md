@@ -55,7 +55,7 @@ ftp://ftp.ncbi.nih.gov/genbank/
 
 wget --no-remove-listing ftp://ftp.ncbi.nlm.nih.gov/genbank
 
-# See the resultant file names .listing
+# See the resultant file named .listing
 ```
 
 ## Comprehensive Viral Database ##
