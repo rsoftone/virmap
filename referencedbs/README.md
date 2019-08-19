@@ -50,7 +50,7 @@ ftp://ftp.ncbi.nih.gov/genbank/
 
 ```
 #
-# Command line to retrieve the list of files under ftp://ftp.ncbi.nlm.nih.gov/genbank
+# Retrieve the list of files under ftp://ftp.ncbi.nlm.nih.gov/genbank
 # 
 
 wget -
@@ -70,6 +70,10 @@ gbphage (3 files as at June 2019, ~0.4 GB total size)
 Genbank Divisions used:
 
 gbbct (348 files as at June 2019, ~35GB total size)
+
+```
+while  read -r aseq;  do  ~/.aspera/connect/bin/ascp -i ~/.aspera/connect/etc/asperaweb_id_dsa.openssh -k1 -Tr -l800m anonftp@ftp.ncbi.nlm.nih.gov:/genbank/${aseq} /destinationDir/.  ; done < gbbct.txt 
+```
 
 gbcon (207 files as at June 2019, ~2GB total size)
 
