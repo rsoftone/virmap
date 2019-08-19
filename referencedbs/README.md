@@ -100,7 +100,21 @@ gbpat (197 files as at June 2019, ~9GB total size)
 
 gbphg PHAGE – Separate processing also (3 files as at June 2019, ~0.5GB total size)
 
-gbpln (156 files as at June 2019, ~15GB total size)
+**gbpln** (156 files as at June 2019, ~15GB total size)
+
+```
+grep gbpln .listing | sed 's/.*gbpln/gbpln/g' | sed 's/\n//g' > gbpln.txt
+dos2unix gbpln.txt
+
+while  read -r aseq
+do
+    ~/.aspera/connect/bin/ascp \
+    -i ~/.aspera/connect/etc/asperaweb_id_dsa.openssh \
+    -k1 -Tr -l800m \
+    anonftp@ftp.ncbi.nlm.nih.gov:/genbank/${aseq} /destinationDir/.  
+
+done < gbpln.txt 
+```
 
 gbpri (34 files as at June 2019, ~5GB total size)
 
