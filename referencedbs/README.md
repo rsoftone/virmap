@@ -69,7 +69,7 @@ gbphage (3 files as at June 2019, ~0.4 GB total size)
 
 Genbank Divisions used:
 
-gbbct (348 files as at June 2019, ~35GB total size)
+**gbbct** (348 files as at June 2019, ~35GB total size)
 
 ```
 while  read -r aseq
@@ -107,7 +107,7 @@ gbuna (1 file as at June 2019, ~0.001GB total size)
 
 gbvrl VIRUS – Separate processing also (33 files as at June 2019, ~3GB total size)
 
-gbvrt (109 files as at June 2019, ~12GB total size)
+**gbvrt** (109 files as at June 2019, ~12GB total size)
 
 ## Genbank Divisons not used ##
 
