@@ -102,10 +102,34 @@ do
 done < gbcon.txt
 ```
 
-gbenv (57 files as at June 2019, ~2GB total size)
+**gbenv** (57 files as at June 2019, ~2GB total size)
+```
+grep gbcon .listing | sed 's/.*gbcon/gbcon/g' | sed 's/\n//g' > gbcon.txt
+dos2unix gbcon.txt
 
-gbhtc (8 files as at June 2019, ~0.5GB total size) 
+while  read -r aseq
+do
+    ~/.aspera/connect/bin/ascp \
+    -i ~/.aspera/connect/etc/asperaweb_id_dsa.openssh \
+    -k1 -Tr -l800m \
+    anonftp@ftp.ncbi.nlm.nih.gov:/genbank/${aseq} /destinationDir/.  
 
+done < gbenv.txt
+```
+**gbhtc** (8 files as at June 2019, ~0.5GB total size) 
+```
+grep gbhtc .listing | sed 's/.*gbhtc/gbhtc/g' | sed 's/\n//g' > gbhtc.txt
+dos2unix gbhtc.txt
+
+while  read -r aseq
+do
+    ~/.aspera/connect/bin/ascp \
+    -i ~/.aspera/connect/etc/asperaweb_id_dsa.openssh \
+    -k1 -Tr -l800m \
+    anonftp@ftp.ncbi.nlm.nih.gov:/genbank/${aseq} /destinationDir/.  
+
+done < gbhtc.txt
+```
 **gbinv** (71 files as at June 2019, ~3GB total size)
 
 ```
