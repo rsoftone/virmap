@@ -92,7 +92,21 @@ gbenv (57 files as at June 2019, ~2GB total size)
 
 gbhtc (8 files as at June 2019, ~0.5GB total size) 
 
-gbinv (71 files as at June 2019, ~3GB total size)
+**gbinv** (71 files as at June 2019, ~3GB total size)
+
+```
+grep gbinv .listing | sed 's/.*gbinv/gbinv/g' | sed 's/\n//g' > gbinv.txt
+dos2unix gbinv.txt
+
+while  read -r aseq
+do
+    ~/.aspera/connect/bin/ascp \
+    -i ~/.aspera/connect/etc/asperaweb_id_dsa.openssh \
+    -k1 -Tr -l800m \
+    anonftp@ftp.ncbi.nlm.nih.gov:/genbank/${aseq} /destinationDir/.  
+
+done < gbinv.txt 
+```
 
 **gbmam** (33 files as at June 2019, ~3.3GB total size)
 
