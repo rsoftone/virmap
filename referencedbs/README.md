@@ -178,8 +178,21 @@ do
 done < gbpat.txt 
 ```
 
-gbphg PHAGE – Separate processing also (3 files as at June 2019, ~0.5GB total size)
+**gbphg** PHAGE – Separate processing also (3 files as at June 2019, ~0.5GB total size)
 
+```
+grep gbphg .listing | sed 's/.*gbphg/gbphg/g' | sed 's/\n//g' > gbphg.txt
+dos2unix gbphg.txt
+
+while  read -r aseq
+do
+    ~/.aspera/connect/bin/ascp \
+    -i ~/.aspera/connect/etc/asperaweb_id_dsa.openssh \
+    -k1 -Tr -l800m \
+    anonftp@ftp.ncbi.nlm.nih.gov:/genbank/${aseq} /destinationDir/.  
+
+done < gbphg.txt
+```
 **gbpln** (156 files as at June 2019, ~15GB total size)
 
 ```
