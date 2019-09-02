@@ -94,7 +94,21 @@ gbhtc (8 files as at June 2019, ~0.5GB total size)
 
 gbinv (71 files as at June 2019, ~3GB total size)
 
-gbmam (33 files as at June 2019, ~3.3GB total size)
+**gbmam** (33 files as at June 2019, ~3.3GB total size)
+
+```
+grep gbmam .listing | sed 's/.*gbmam/gbmam/g' | sed 's/\n//g' > gbpmam.txt
+dos2unix gbmam.txt
+
+while  read -r aseq
+do
+    ~/.aspera/connect/bin/ascp \
+    -i ~/.aspera/connect/etc/asperaweb_id_dsa.openssh \
+    -k1 -Tr -l800m \
+    anonftp@ftp.ncbi.nlm.nih.gov:/genbank/${aseq} /destinationDir/.  
+
+done < gbmam.txt 
+```
 
 **gbpat** (197 files as at June 2019, ~9GB total size)
 
