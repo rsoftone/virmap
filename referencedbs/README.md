@@ -97,7 +97,7 @@ gbinv (71 files as at June 2019, ~3GB total size)
 **gbmam** (33 files as at June 2019, ~3.3GB total size)
 
 ```
-grep gbmam .listing | sed 's/.*gbmam/gbmam/g' | sed 's/\n//g' > gbpmam.txt
+grep gbmam .listing | sed 's/.*gbmam/gbmam/g' | sed 's/\n//g' > gbmam.txt
 dos2unix gbmam.txt
 
 while  read -r aseq
