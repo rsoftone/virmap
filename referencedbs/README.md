@@ -96,7 +96,7 @@ gbinv (71 files as at June 2019, ~3GB total size)
 
 gbmam (33 files as at June 2019, ~3.3GB total size)
 
-gbpat (197 files as at June 2019, ~9GB total size)
+**gbpat** (197 files as at June 2019, ~9GB total size)
 
 ```
 grep gbpat .listing | sed 's/.*gbpat/gbpat/g' | sed 's/\n//g' > gbpat.txt
@@ -130,7 +130,21 @@ do
 done < gbpln.txt 
 ```
 
-gbpri (34 files as at June 2019, ~5GB total size)
+**gbpri** (34 files as at June 2019, ~5GB total size)
+
+```
+grep gbpri .listing | sed 's/.*gbpri/gbpri/g' | sed 's/\n//g' > gbpri.txt
+dos2unix gbpri.txt
+
+while  read -r aseq
+do
+    ~/.aspera/connect/bin/ascp \
+    -i ~/.aspera/connect/etc/asperaweb_id_dsa.openssh \
+    -k1 -Tr -l800m \
+    anonftp@ftp.ncbi.nlm.nih.gov:/genbank/${aseq} /destinationDir/.  
+
+done < gbpri.txt 
+```
 
 gbrod (17 files as at June 2019, ~2GB total size)
 
