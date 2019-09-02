@@ -225,8 +225,21 @@ do
 done < gbpri.txt 
 ```
 
-gbrod (17 files as at June 2019, ~2GB total size)
+**gbrod** (17 files as at June 2019, ~2GB total size)
 
+```
+grep gbrod .listing | sed 's/.*gbrod/gbrod/g' | sed 's/\n//g' > gbrod.txt
+dos2unix gbrod.txt
+
+while  read -r aseq
+do
+    ~/.aspera/connect/bin/ascp \
+    -i ~/.aspera/connect/etc/asperaweb_id_dsa.openssh \
+    -k1 -Tr -l800m \
+    anonftp@ftp.ncbi.nlm.nih.gov:/genbank/${aseq} /destinationDir/.  
+
+done < gbrod.txt 
+```
 gbsts (11 files as at June 2019, ~0.2GB total size)
 
 gbsyn (27 files as at June 2019, ~3GB total size)
