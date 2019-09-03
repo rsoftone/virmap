@@ -1,4 +1,8 @@
 # Reference databases #
+## Quicklinks ##
+* [Download ascp utility](aspera-ibm-ascp-utility)
+* [List files served by GenBank FTP server](genbank-ftp-server)
+* [Downloading required GenBank divisions](comprehensive-general-purpose-database)
  
  gb[abbreviated code] 
  
