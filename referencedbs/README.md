@@ -4,9 +4,7 @@
 * [List files served by GenBank FTP server](#genbank-ftp-server)
 * [Downloading required GenBank divisions](#comprehensive-general-purpose-database)
  
- gb[abbreviated code] 
- 
- (e.g. gbvrl) 
+ gb[abbreviated code] (Example: gbvrl)
  
  each [abbreviated code] correspond to a particular sequence database, called **Genbank divisions**. 
  
