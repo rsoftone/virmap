@@ -240,7 +240,21 @@ do
 
 done < gbrod.txt 
 ```
-gbsts (11 files as at June 2019, ~0.2GB total size)
+
+**gbsts** (11 files as at June 2019, ~0.2GB total size)
+```
+grep gbsts .listing | sed 's/.*gbsts/gbsts/g' | sed 's/\n//g' > gbsts.txt
+dos2unix gbsts.txt
+
+while  read -r aseq
+do
+    ~/.aspera/connect/bin/ascp \
+    -i ~/.aspera/connect/etc/asperaweb_id_dsa.openssh \
+    -k1 -Tr -l800m \
+    anonftp@ftp.ncbi.nlm.nih.gov:/genbank/${aseq} /destinationDir/.  
+
+done < gbsts.txt
+```
 
 **gbsyn** (27 files as at June 2019, ~3GB total size)
 ```
