@@ -4,9 +4,9 @@
 * [List files served by GenBank FTP server](#genbank-ftp-server)
 * [Downloading required GenBank divisions](#comprehensive-general-purpose-database)
  
- gb[abbreviated code] (Example: gbvrl)
+ **gb[abbreviated code]** (Example: gbvrl)
  
- each [abbreviated code] correspond to a particular sequence database, called **Genbank divisions**. 
+ each [abbreviated code] corresponds to a particular sequence database, called **Genbank divisions**. 
  
  The GenBank database is divided into 18 divisions:
 
