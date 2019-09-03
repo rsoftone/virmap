@@ -50,7 +50,7 @@ The Genbank divisions are at this FTP server:
 
 ftp://ftp.ncbi.nih.gov/genbank/
 
-```
+```bash
 #
 # Retrieve the list of files under ftp://ftp.ncbi.nlm.nih.gov/genbank
 # 
@@ -74,7 +74,7 @@ Genbank Divisions used:
 
 **gbbct** (348 files as at June 2019, ~41GB total size)
 
-```
+```bash
 grep gbbct .listing | sed 's/.*gbbct/gbbct/g' | sed 's/\n//g' > gbbct.txt
 dos2unix gbbct.txt
 
@@ -90,7 +90,7 @@ done < gbbct.txt
 
 **gbcon** (207 files as at June 2019, ~2GB total size)
 
-```
+```bash
 grep gbcon .listing | sed 's/.*gbcon/gbcon/g' | sed 's/\n//g' > gbcon.txt
 dos2unix gbcon.txt
 
@@ -105,7 +105,8 @@ done < gbcon.txt
 ```
 
 **gbenv** (57 files as at June 2019, ~2GB total size)
-```
+
+```bash
 grep gbcon .listing | sed 's/.*gbcon/gbcon/g' | sed 's/\n//g' > gbcon.txt
 dos2unix gbcon.txt
 
@@ -118,8 +119,10 @@ do
 
 done < gbenv.txt
 ```
+
 **gbhtc** (8 files as at June 2019, ~0.5GB total size) 
-```
+
+```bash
 grep gbhtc .listing | sed 's/.*gbhtc/gbhtc/g' | sed 's/\n//g' > gbhtc.txt
 dos2unix gbhtc.txt
 
@@ -132,9 +135,10 @@ do
 
 done < gbhtc.txt
 ```
+
 **gbinv** (71 files as at June 2019, ~3GB total size)
 
-```
+```bash
 grep gbinv .listing | sed 's/.*gbinv/gbinv/g' | sed 's/\n//g' > gbinv.txt
 dos2unix gbinv.txt
 
@@ -150,7 +154,7 @@ done < gbinv.txt
 
 **gbmam** (33 files as at June 2019, ~3.3GB total size)
 
-```
+```bash
 grep gbmam .listing | sed 's/.*gbmam/gbmam/g' | sed 's/\n//g' > gbmam.txt
 dos2unix gbmam.txt
 
@@ -166,7 +170,7 @@ done < gbmam.txt
 
 **gbpat** (197 files as at June 2019, ~9GB total size)
 
-```
+```bash
 grep gbpat .listing | sed 's/.*gbpat/gbpat/g' | sed 's/\n//g' > gbpat.txt
 dos2unix gbpat.txt
 
@@ -182,7 +186,7 @@ done < gbpat.txt
 
 **gbphg** PHAGE – Separate processing also (3 files as at June 2019, ~0.5GB total size)
 
-```
+```bash
 grep gbphg .listing | sed 's/.*gbphg/gbphg/g' | sed 's/\n//g' > gbphg.txt
 dos2unix gbphg.txt
 
@@ -195,9 +199,10 @@ do
 
 done < gbphg.txt
 ```
+
 **gbpln** (156 files as at June 2019, ~15GB total size)
 
-```
+```bash
 grep gbpln .listing | sed 's/.*gbpln/gbpln/g' | sed 's/\n//g' > gbpln.txt
 dos2unix gbpln.txt
 
@@ -213,7 +218,7 @@ done < gbpln.txt
 
 **gbpri** (34 files as at June 2019, ~5GB total size)
 
-```
+```bash
 grep gbpri .listing | sed 's/.*gbpri/gbpri/g' | sed 's/\n//g' > gbpri.txt
 dos2unix gbpri.txt
 
@@ -229,7 +234,7 @@ done < gbpri.txt
 
 **gbrod** (17 files as at June 2019, ~2GB total size)
 
-```
+```bash
 grep gbrod .listing | sed 's/.*gbrod/gbrod/g' | sed 's/\n//g' > gbrod.txt
 dos2unix gbrod.txt
 
@@ -244,7 +249,8 @@ done < gbrod.txt
 ```
 
 **gbsts** (11 files as at June 2019, ~0.2GB total size)
-```
+
+```bash
 grep gbsts .listing | sed 's/.*gbsts/gbsts/g' | sed 's/\n//g' > gbsts.txt
 dos2unix gbsts.txt
 
@@ -259,7 +265,8 @@ done < gbsts.txt
 ```
 
 **gbsyn** (27 files as at June 2019, ~3GB total size)
-```
+
+```bash
 grep gbsyn .listing | sed 's/.*gbsyn/gbsyn/g' | sed 's/\n//g' > gbsyn.txt
 dos2unix gbsyn.txt
 
@@ -275,7 +282,7 @@ done < gbsyn.txt
 
 **gbuna** (1 file as at June 2019, ~0.001GB total size)
 
-```
+```bash
 grep gbuna .listing | sed 's/.*gbuna/gbuna/g' | sed 's/\n//g' > gbuna.txt
 dos2unix gbuna.txt
 
@@ -291,7 +298,7 @@ done < gbuna.txt
 
 **gbvrl** VIRUS – Separate processing also (33 files as at June 2019, ~3GB total size)
 
-```
+```bash
 grep gbvrl .listing | sed 's/.*gbvrl/gbvrl/g' | sed 's/\n//g' > gbvrl.txt
 dos2unix gbvrl.txt
 
@@ -304,9 +311,10 @@ do
 
 done < gbvrl.txt 
 ```
+
 **gbvrt** (109 files as at June 2019, ~12GB total size)
 
-```
+```bash
 grep gbvrt .listing | sed 's/.*gbvrt/gbvrt/g' | sed 's/\n//g' > gbvrt.txt
 dos2unix gbvrt.txt
 
