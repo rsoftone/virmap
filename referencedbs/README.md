@@ -256,7 +256,22 @@ do
 
 done < gbsyn.txt
 ```
-gbuna (1 file as at June 2019, ~0.001GB total size)
+
+**gbuna** (1 file as at June 2019, ~0.001GB total size)
+
+```
+grep gbuna .listing | sed 's/.*gbuna/gbuna/g' | sed 's/\n//g' > gbuna.txt
+dos2unix gbuna.txt
+
+while  read -r aseq
+do
+    ~/.aspera/connect/bin/ascp \
+    -i ~/.aspera/connect/etc/asperaweb_id_dsa.openssh \
+    -k1 -Tr -l800m \
+    anonftp@ftp.ncbi.nlm.nih.gov:/genbank/${aseq} /destinationDir/.  
+
+done < gbuna.txt
+```
 
 **gbvrl** VIRUS – Separate processing also (33 files as at June 2019, ~3GB total size)
 
