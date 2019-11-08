@@ -2,6 +2,8 @@
 * [Taxonomy database](#part-1-taxonomy-database-generation)
 * [Accession -> GI lookup](#part-2-accession---gi-lookup)
 * [Genbank downloads](#part-3-genbank-division-download)
+* [Nucleotide .fasta generation](#part-4-nucleotide-fasta-generation-using-katana-pbs-script)
+* [Protein .fasta generation](#part-5-protein-fasta-generation-using-katana-pbs-script)
 
 ### Part 1: Taxonomy database generation
 
