@@ -6,6 +6,15 @@
 * [Protein .fasta generation](#part-5-protein-fasta-generation-using-katana-pbs-script)
 
 ### Part 1: Taxonomy database generation
+**Code files:**
+- 10-construct-taxa/10-construct-taxa.pl
+
+**Usage:**
+```
+cd 10-construct-taxa
+./01-construct-taxa.sh
+cd ..
+```
 
 ### Part 2: Accession -> GI lookup
 
