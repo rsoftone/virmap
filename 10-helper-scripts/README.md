@@ -17,6 +17,31 @@ cd ..
 ```
 
 ### Part 2: Accession -> GI lookup
+```
+#!/bin/bash
+GBACCLIST=GbAccList.0602.2019
+wget https://ftp.ncbi.nih.gov/genbank/livelists/${GBACCLIST}.gz
+gunzip ${GBACCLIST}.gz
+
+# 
+# Format:
+# GENBANK-ACCESSION-NUMBER,SEQUENCE-VERSION,GI
+
+# zcat GbAccList.0602.2019.gz | head -3
+#
+# AACY024124353,1,129566152
+# AACY024124495,1,129566175
+# AACY024124494,1,129566176
+#
+# Concatenate GENBANK-ACCESSION-NUMBER with SEQUENCE-VERSION to get the full accession e.g. "AACY024124353.1". 
+# Uncompress and split this into parts, each with 64 million entries.  This allows us to use smaller sections  if we know which sections specifically we need.
+#
+# (Optional) Split the main file into parts, each with 64 million entries.
+# This allows us to use smaller sections provided we know which sections specifically we need.
+#
+
+split -d -l 64000000 ${GBACCLIST} part
+```
 
 ### Part 3: Genbank division download
 
