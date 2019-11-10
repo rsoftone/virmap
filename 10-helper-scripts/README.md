@@ -44,7 +44,43 @@ split -d -l 64000000 ${GBACCLIST} part
 ```
 
 ### Part 3: Genbank division download
+```
+#
+# Assumes you have run the script in the previous section Part 2: Accession -> GI lookup
+#
+# This section uses the Aspera utility - see: https://downloads.asperasoft.com/connect2/
+#
+# Now download the Genbank division you want to the $GENBANKPATH directory (eg gbvrl):
+#
+ 
+export GENBANKPATH=genbank-ref
+mkdir -p $GENBANKPATH
 
+#
+# Retrieve the list in ftp://ftp.ncbi.nlm.nih.gov/genbank
+# 
+
+wget --no-remove-listing ftp://ftp.ncbi.nlm.nih.gov/genbank
+
+# See the resultant file named .listing
+
+grep gbvrl .listing | sed 's/.*gbvrl/gbvrl/g' | sed 's/\n//g' > gbvrl.txt
+dos2unix gbvrl.txt
+
+while  read -r aseq
+do
+    ~/.aspera/connect/bin/ascp \
+    -i ~/.aspera/connect/etc/asperaweb_id_dsa.openssh \
+    -k1 -Tr -l800m \
+    anonftp@ftp.ncbi.nlm.nih.gov:/genbank/${aseq} ${GENBANKPATH}/.  
+
+done < gbvrl.txt
+
+cd ${GENBANKPATH} && find -type f -exec gunzip \{\} \;
+cd ..
+
+export PREFIXDB=gbvrl
+```
 ### Part 4: Nucleotide .fasta generation using Katana PBS script
 
 ### Part 5: Protein .fasta generation using Katana PBS script
