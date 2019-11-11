@@ -105,7 +105,7 @@ echo "${PBS_ARRAY_INDEX}":...GenBank Division: $PREFIXDB
 echo "${PBS_ARRAY_INDEX}":...Input GenBank flat-file: $GBIN
 echo "${PBS_ARRAY_INDEX}":...Output FASTA: $SEQOUT
 
-time ./03-hash.pl <(cat part00 part01 part02 part03 part04 part05 part06 part07 part08 part09 part10 part11 part12 part13 part14 part15) "${GBIN}" > "${TMPW}/${PBS_ARRAY_INDEX}.fasta"
+time ./03-hash.pl <(cat part00 part01 part02 part03 part04 part05 part06 part07 part08 part09 part10 part11 part12 part13 part14 part15 part16 part17) "${GBIN}" > "${TMPW}/${PBS_ARRAY_INDEX}.fasta"
 
 #
 # Now copy results from TMP directory to final output location...
