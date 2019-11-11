@@ -82,6 +82,108 @@ cd ..
 export PREFIXDB=gbvrl
 ```
 ### Part 4: Nucleotide .fasta generation using Katana PBS script
+05-genbank-fasta-nucleo.sh
+```
+#!/bin/bash
+#PBS -l nodes=1:ppn=2
+#PBS -l mem=250gb
+#PBS -l walltime=03:00:00
+## Expected form of qsub:
+##
+## qsub -N "${PREFIXDB}"-protein -J 1-$(find "${GENBANKPATH}" -type f -name "${PREFIXDB}"*.seq|wc -l) -v PREFIXDB="${PREFIXDB}" 05-genbank-fasta-nucleo.sh 
 
+cd "${PBS_O_WORKDIR}"
+
+PREFPATH=converted/nucleotide
+GENBANKPATH=genbank-ref
+TMPW=$(mktemp -d)
+
+GBIN=$(find $GENBANKPATH -type f -name "${PREFIXDB}*.seq"|sort -n|sed -n "${PBS_ARRAY_INDEX}p")
+SEQOUT=$(echo $GBIN|sed "s=$GENBANKPATH=$PREFPATH=g"|sed "s=.seq$=.fasta=g")
+
+echo "${PBS_ARRAY_INDEX}":...GenBank Division: $PREFIXDB
+echo "${PBS_ARRAY_INDEX}":...Input GenBank flat-file: $GBIN
+echo "${PBS_ARRAY_INDEX}":...Output FASTA: $SEQOUT
+
+time ./03-hash.pl <(cat part00 part01 part02 part03 part04 part05 part06 part07 part08 part09 part10 part11 part12 part13 part14 part15) "${GBIN}" > "${TMPW}/${PBS_ARRAY_INDEX}.fasta"
+
+#
+# Now copy results from TMP directory to final output location...
+#
+
+cp "${TMPW}/${PBS_ARRAY_INDEX}.fasta" "${SEQOUT}"
+rm -rf "${TMPW}"
+```
+03-hash.pl
+```
+#!/usr/bin/env perl
+use strict;
+use English '-no_match_vars';
+use Bio::SeqIO;
+
+my $input_fn = shift;
+my $genbFile = shift;
+
+my $input_fh;
+my $hhash;
+my $lookupval = "NONE";
+
+my $seqio_object;
+
+my $genbank_version;
+my $genbank_taxonomy_id;
+my $genbank_accession;
+my $genbank_version;
+
+my $delay_count = 0;
+my $delay_seconds = 0;
+
+# print $input_fn , "\n";
+open $input_fh, '<', $input_fn or die 'Could not open file: ', $OS_ERROR;
+while ( my $line = <$input_fh> ) {
+    chomp $line;
+    last if ! $line;
+    my ($accession,$version,$gi) = split /,/, $line, 3;
+    $hhash->{"$accession.$version"} = $gi;
+    # print $hhash->{"$accession.$version"}, "\n";
+    # sleep 1;
+}
+
+eval {
+    $seqio_object = Bio::SeqIO->new( -file => $genbFile
+                                   , -format => 'Genbank'
+                                   );
+};
+
+if( $@ ) {
+    print " Error: $@ ";
+    exit(-1);
+}
+
+while ( my $seq_object= $seqio_object->next_seq()) {
+    for my $feat_object ($seq_object->get_SeqFeatures) {
+        for my $tag ($feat_object->get_all_tags) {
+            for my $value ($feat_object->get_tag_values($tag)) {
+                if ($value =~ m/taxon:(\d+)/) {
+                    $genbank_taxonomy_id = $1;
+                }
+            }
+        }
+    }
+    $genbank_accession = $seq_object->accession;
+    $genbank_version   = $seq_object->seq_version;
+    eval {
+        $lookupval = $hhash->{"$genbank_accession.$genbank_version"};
+    };
+    if( $@ ) {
+        $lookupval = "NOT FOUND";
+    }
+    print ">gi|", $lookupval, "|", "gb", "|", $genbank_accession, ".", $genbank_version, "|", $seq_object->desc, "...;taxId=", $genbank_taxonomy_id, "\n";
+    print $seq_object->seq, "\n";
+    print "\n";
+}
+
+close $input_fh or die 'Could not close file: ', $OS_ERROR;
+```
 ### Part 5: Protein .fasta generation using Katana PBS script
 
