@@ -12,7 +12,7 @@ Where do I find what I'm looking for?
 **Reference databases** - see /referencedbs
 
 ### Installation and Setup
-**Important: ** Complete the installation steps below first.  Then proceed to https://github.com/rsoftone/virmap/tree/master/10-helper-scripts to setup databases (from NCBI Taxonomy and Genbank)
+**Important:** Complete the installation steps below first.  Then proceed to https://github.com/rsoftone/virmap/tree/master/10-helper-scripts to setup databases (from NCBI Taxonomy and Genbank)
   
 ```
 #!/bin/bash
