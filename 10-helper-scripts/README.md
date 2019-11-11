@@ -94,6 +94,10 @@ export PREFIXDB=gbvrl
 ## Expected form of qsub:
 ##
 ## qsub -N "${PREFIXDB}"-protein -J 1-$(find "${GENBANKPATH}" -type f -name "${PREFIXDB}"*.seq|wc -l) -v PREFIXDB="${PREFIXDB}" 05-genbank-fasta-nucleo.sh 
+##
+## Output directory for .fasta file: converted/nucleotide
+##
+cd "${PBS_O_WORKDIR}"
 
 cd "${PBS_O_WORKDIR}"
 
@@ -201,7 +205,9 @@ close $input_fh or die 'Could not close file: ', $OS_ERROR;
 ## Expected form of qsub:
 ##
 ## qsub -N "${PREFIXDB}"-protein -J 1-$(find "${GENBANKPATH}" -type f -name "${PREFIXDB}"*.seq|wc -l) -v PREFIXDB="${PREFIXDB}" 05-genbank-fasta-protein.sh 
-
+##
+## Output directory for .fasta file: converted/protein
+##
 cd "${PBS_O_WORKDIR}"
 
 PREFPATH=converted/protein
