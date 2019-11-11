@@ -88,6 +88,9 @@ export PREFIXDB=gbvrl
 #PBS -l nodes=1:ppn=2
 #PBS -l mem=250gb
 #PBS -l walltime=03:00:00
+#
+# Assumes you have run the script in the previous section Part 3: Genbank division download
+#
 ## Expected form of qsub:
 ##
 ## qsub -N "${PREFIXDB}"-protein -J 1-$(find "${GENBANKPATH}" -type f -name "${PREFIXDB}"*.seq|wc -l) -v PREFIXDB="${PREFIXDB}" 05-genbank-fasta-nucleo.sh 
