@@ -56,6 +56,7 @@ dependencies:
 - pigz
 - zstd
 - sra-tools
+- coreutils
 EOF
 
 #
