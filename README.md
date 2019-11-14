@@ -48,7 +48,7 @@ channels:
 dependencies:
 - diamond
 - blast
-- bbtools
+- bbmap
 - megahit
 - khmer
 - vsearch
