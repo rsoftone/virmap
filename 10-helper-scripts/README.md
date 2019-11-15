@@ -4,6 +4,8 @@
 * [Genbank downloads](#part-3-genbank-division-download)
 * [Nucleotide .fasta generation](#part-4-nucleotide-fasta-generation-using-katana-pbs-script)
 * [Protein .fasta generation](#part-5-protein-fasta-generation-using-katana-pbs-script)
+* [Build BBmap virus database](#part-6-build-bbmap-virus-database)
+* [Build Diamond virus database](#part-7-build-diamond-virus-database)
 
 ### Part 1: Taxonomy database generation
 **Code files:**
@@ -385,4 +387,50 @@ while ( my $seq_object= $seqio_object->next_seq()) {
 }
 
 close $input_fh or die 'Could not close file: ', $OS_ERROR;
+```
+
+### Part 6: Build BBmap virus database
+
+**Code files:**
+
+* [60-construct-bbmap.sh](./60-construct-bbmap.sh)
+
+**Notes:**
+
+Requires 30-45G RAM - max heap size is specified as 40G.
+
+Runtime: < 10 minutes (16 cores)
+
+**Usage:**
+
+Paramaters:
+
+1. Path to the nucleotide FASTA files generated in [Part 4](#part-4-nucleotide-fasta-generation-using-katana-pbs-script)
+
+2. Path to output the database folder (default: `./virBbmap`)
+
+```bash
+./60-construct-bbmap.sh path/to/genbank/nucleotide/fasta ./virBbmap
+```
+
+### Part 7: Build Diamond virus database
+
+**Code files:**
+
+* [70-construct-virdmnd.sh](./70-construct-virdmnd.sh)
+
+**Notes:**
+
+Runtime: < 5 minutes (16 cores)
+
+**Usage:**
+
+Paramaters:
+
+1. Path to the protein FASTA files generated in [Part 5](#part-5-protein-fasta-generation-using-katana-pbs-script)
+
+2. Path to output the database file (default: `./virDmnd`)
+
+```bash
+./70-construct-virdmnd.sh path/to/genbank/protein/fasta ./virDmnd
 ```
