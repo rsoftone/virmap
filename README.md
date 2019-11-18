@@ -59,6 +59,7 @@ dependencies:
 - zstd
 - sra-tools
 - coreutils
+- kraken2
 EOF
 
 #
