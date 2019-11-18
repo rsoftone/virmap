@@ -11,6 +11,8 @@ Where do I find what I'm looking for?
 
 **Reference databases** - see /referencedbs
 
+**VirMAP parameter descriptions** - see [parameters](./parameters.md)
+
 ### Installation and Setup
 **Important:** Complete the installation steps below first.  Then proceed to https://github.com/rsoftone/virmap/tree/master/10-helper-scripts to setup databases (from NCBI Taxonomy and Genbank)
   
