@@ -7,7 +7,7 @@ Parameter            | Type   | Required              | Notes
 `--readR`            | Path   |                       | Path to input file containing reverse reads, must have an accompanying `--readF` parameter in the same order, _may be specified multiple times_
 `--readUnpaired`     | Path   |                       | Path to input file containing unpaired reads, _may be specified multiple times_
 `--outputDir`        | Path   | Yes                   | Path to the output folder, **must not exist**
-`--sampleName`       | String | Yes                   | Used as a prefix for filenames in the pipeline
+`--sampleName`       | String | Yes                   | Used as a prefix for intermediate and output filenames in the pipeline
 `--gbBlastx`         | Path   | Unless `noTaxaDep`¹   | Amino acid Genbank `diamond` database
 `--gbBlastn`         | Path   | Unless `noTaxaDep`¹   | Nucleotide Genbank `blast` database
 `--virBbmap`         | Path   | Unless `--noNucMap`   | Nucleotide Virus `bbmap` database - see [10-helper-scripts](./10-helper-scripts/README.md)
@@ -29,7 +29,7 @@ Parameter            | Type   | Required              | Notes
 `--noAaMap`          | Flag   |                       | Skips mapping to protein database i.e. `diamond blastx`. `--virDmnd` may be omitted with this option
 `--noAssembly`       | Flag   |                       | Skip all assembly steps, takes precedence over other assembly options
 `--noCorrection`     | Flag   |                       | Skip kmer correction during tadpole sensitive assmebly, only applicaple when paired with the --sensitive option
-`--noEntropy`        | Flag   |                       | Skip entropy-based contitg filtering, overridden if taxonomy based filtering is enabledu
+`--noEntropy`        | Flag   |                       | Skip entropy-based contitg filtering, overridden if taxonomy based filtering is enabled
 `--noFilter`         | Flag   |                       | Skip taxonomy-based contig filtering
 `--noIterImp`        | Flag   |                       | Skips iterative contig improvement i.e. `improveWrapper.pl`
 `--noMerge`          | Flag   |                       | Skip contig merging, only considered if iterative improvement (`--noIterImp`) is also disabled
