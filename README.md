@@ -63,6 +63,7 @@ dependencies:
 - sra-tools
 - coreutils
 - kraken2
+- parallel
 EOF
 
 #

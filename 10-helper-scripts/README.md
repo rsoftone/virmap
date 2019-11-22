@@ -6,6 +6,8 @@
 * [Protein .fasta generation](#part-5-protein-fasta-generation-using-katana-pbs-script)
 * [Build BBmap virus database](#part-6-build-bbmap-virus-database)
 * [Build Diamond virus database](#part-7-build-diamond-virus-database)
+* [Build Kraken2 database](#part-8-build-kraken2-database)
+
 
 ### Part 1: Taxonomy database generation
 **Code files:**
@@ -433,4 +435,34 @@ Paramaters:
 
 ```bash
 ./70-construct-virdmnd.sh path/to/genbank/protein/fasta ./virDmnd
+```
+
+# Part 8: Build Kraken2 database
+
+**Code files:**
+
+* [80-construct-kraken2.sh](./80-construct-kraken2.sh)
+
+**Notes:**
+
+This is an optional step, only required if use of `krakenFilter` is desired.
+
+Also see: [VirMap Parameters](../parameters.md)
+
+Requires: 50-80G RAM
+
+Runtime: 2-3 hours (48 cores - Gadi)
+
+**Usage:**
+
+Paramaters:
+
+1. Path to the nucleotide FASTA files generated in [Part 4](#part-4-nucleotide-fasta-generation-using-katana-pbs-script)
+
+2. Path to output the database folder (default: `./krakenDb`)
+
+3. Number of threads to use (default: autodetected)
+
+```bash
+./80-construct-kraken2.sh path/to/genbank/nucleotide/fasta ./krakenDb
 ```
