@@ -30,7 +30,7 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
-if [[ $! -eq 0 ]]; then
+if [[ $# -eq 0 ]]; then
     usage
     exit 0
 fi
