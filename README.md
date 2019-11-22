@@ -24,21 +24,24 @@ Where do I find what I'm looking for?
 #
 # Download and install Miniconda
 #
+INSTALL_DIR=$TMPDIR/virmap
+MINICONDA_DIR=$TMPDIR/miniconda3
 
 cd $TMPDIR
 
 wget https://repo.anaconda.com/miniconda/Miniconda3-4.5.11-Linux-x86_64.sh -O $TMPDIR/miniconda.sh
 
 #
-# The next line is Raijin specific (we prefix the environments to store them in my $TMPDIR directory)
+# The next line is Raijin specific (we prefix the environments to store them in my $MINICONDA_DIR directory)
 #
 
-/bin/bash $TMPDIR/miniconda.sh -u -b -p $TMPDIR
+/bin/bash $TMPDIR/miniconda.sh -u -b -p $MINICONDA_DIR
 
 # sudo yum install -y openssl-devel
 
-mkdir $TMPDIR/virmap
-source $TMPDIR/etc/profile.d/conda.sh
+mkdir $INSTALL_DIR
+cd $INSTALL_DIR
+source $MINICONDA_DIR/etc/profile.d/conda.sh
 
 cat - <<EOF >environment.yml 
 name: virmap
@@ -87,7 +90,7 @@ export CC=/apps/gcc/4.9.0/wrapper/gcc
 # On Raijin: this will build a multithreaded Perl with gcc 4.9 (needed for C++11), without Perl docs
 #
 
-./Configure -des -Dusethreads -Dprefix=$TMPDIR/virmap -Dcc=/apps/gcc/4.9.0/wrapper/gcc -Dman1dir=none -Dman3dir=none
+./Configure -des -Dusethreads -Dprefix=$INSTALL_DIR -Dcc=/apps/gcc/4.9.0/wrapper/gcc -Dman1dir=none -Dman3dir=none
 
 make
 make install
@@ -97,7 +100,7 @@ module unload gcc/4.9.0
 # Finished Perl 5.28.0...proceed to install VirMap itself
 #
 
-cd $TMPDIR/virmap && git clone https://github.com/cmmr/virmap.git
+cd $INSTALL_DIR && git clone https://github.com/cmmr/virmap.git
 cd ~
 
 #
@@ -105,13 +108,13 @@ cd ~
 #
 
 module load binutils/2.32
-export PERL5LIB=$TMPDIR/virmap/lib/perl5
 
 # 
 # Get suitable PATH for VirMap and Perl 5.28.0
 #
+export PERL5LIB=$INSTALL_DIR/lib/perl5
+export PATH=$INSTALL_DIR/virmap:$INSTALL_DIR/bin:$PATH
 
-export PATH=$TMPDIR/virmap/virmap:$TMPDIR/virmap/bin:$PATH
 module load gcc/4.9.0
 
 cpan App::cpanminus
@@ -126,25 +129,25 @@ perl -MCPAN -e "CPAN::Shell->notest('install','RocksDB')"
 # For other dependencies
 #
 
-cpanm --local-lib=$TMPDIR/virmap OpenSourceOrg::API
+cpanm --local-lib=$INSTALL_DIR OpenSourceOrg::API
 
-cpanm --local-lib=$TMPDIR/virmap --force POSIX::1003::Sysconf
+cpanm --local-lib=$INSTALL_DIR --force POSIX::1003::Sysconf
 
-cpanm --local-lib=$TMPDIR/virmap --force POSIX::RT::Semaphore
+cpanm --local-lib=$INSTALL_DIR --force POSIX::RT::Semaphore
 
-cpanm --local-lib=$TMPDIR/virmap Compress::Zstd
+cpanm --local-lib=$INSTALL_DIR Compress::Zstd
 
-cpanm --local-lib=$TMPDIR/virmap Sereal
+cpanm --local-lib=$INSTALL_DIR --force Sereal
 
-cpanm --local-lib=$TMPDIR/virmap Text::Levenshtein::Damerau::XS
+cpanm --local-lib=$INSTALL_DIR Text::Levenshtein::Damerau::XS
 
-cpanm --local-lib=$TMPDIR/virmap Text::Levenshtein::XS
+cpanm --local-lib=$INSTALL_DIR Text::Levenshtein::XS
 
-cpanm --local-lib=$TMPDIR/virmap Statistics::Basic
+cpanm --local-lib=$INSTALL_DIR Statistics::Basic
 
 module unload binutils
 
-cd $TMPDIR/virmap/lib/perl5 && wget https://raw.githubusercontent.com/ucdavis-bioinformatics/assemblathon2-analysis/master/FAlite.pm
+cd $INSTALL_DIR/lib/perl5 && wget https://raw.githubusercontent.com/ucdavis-bioinformatics/assemblathon2-analysis/master/FAlite.pm
 cd ~
 
 #
@@ -163,8 +166,8 @@ perl -e 'use Compress::Zstd; use English; use Thread::Semaphore; use Thread::Que
 source $TMPDIR/etc/profile.d/conda.sh
 conda activate virmap
 
-export PATH=$TMPDIR/virmap/virmap:$TMPDIR/virmap/bin:$PATH
-export PERL5LIB=$TMPDIR/virmap/lib/perl5
+export PATH=$INSTALL_DIR/virmap:$INSTALL_DIR/bin:$PATH
+export PERL5LIB=$INSTALL_DIR/lib/perl5
 module load gcc/4.9.0
 
 Virmap.pl
