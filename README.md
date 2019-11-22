@@ -107,9 +107,26 @@ cd $INSTALL_DIR && git clone https://github.com/cmmr/virmap.git
 
 module load binutils/2.32
 
-# 
+# Setup a simple activation script, usage:
+# source $INSTALL_DIR/activate.sh
+
+cat - <<EOF >$INSTALL_DIR/activate.sh
+INSTALL_DIR=$INSTALL_DIR
+MINICONDA_DIR=$MINICONDA_DIR
+
+#
+# Setup conda in the shell and activate the environment
+#
+source "\$MINICONDA_DIR/etc/profile.d/conda.sh"
+conda activate virmap
+
+#
 # Get suitable PATH for VirMap and Perl 5.28.0
 #
+export PERL5LIB=\$INSTALL_DIR/lib/perl5
+export PATH=\$INSTALL_DIR/virmap:\$INSTALL_DIR/bin:\$PATH
+EOF
+
 export PERL5LIB=$INSTALL_DIR/lib/perl5
 export PATH=$INSTALL_DIR/virmap:$INSTALL_DIR/bin:$PATH
 
@@ -159,11 +176,10 @@ perl -e 'use Compress::Zstd; use English; use Thread::Semaphore; use Thread::Que
 # First logout, then login again to Raijin
 #
 
-source $TMPDIR/etc/profile.d/conda.sh
-conda activate virmap
+# You'll want to substitute $INSTALL_DIR here manually,
+# as it was set in the previous session
+source $INSTALL_DIR/activate.sh
 
-export PATH=$INSTALL_DIR/virmap:$INSTALL_DIR/bin:$PATH
-export PERL5LIB=$INSTALL_DIR/lib/perl5
 module load gcc/4.9.0
 
 Virmap.pl
