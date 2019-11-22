@@ -94,14 +94,12 @@ export CC=/apps/gcc/4.9.0/wrapper/gcc
 
 make
 make install
-module unload gcc/4.9.0
 
 #
 # Finished Perl 5.28.0...proceed to install VirMap itself
 #
 
 cd $INSTALL_DIR && git clone https://github.com/cmmr/virmap.git
-cd ~
 
 #
 # binutils is old on Raijin...load a module with updated /bin/as
@@ -115,15 +113,13 @@ module load binutils/2.32
 export PERL5LIB=$INSTALL_DIR/lib/perl5
 export PATH=$INSTALL_DIR/virmap:$INSTALL_DIR/bin:$PATH
 
-module load gcc/4.9.0
-
 cpan App::cpanminus
 
 #
 # For RocksDB (make sure environment variable CC is set correctly!)
 #
 
-perl -MCPAN -e "CPAN::Shell->notest('install','RocksDB')"
+cpanm --local-lib=$INSTALL_DIR --force RocksDB
 
 #
 # For other dependencies
