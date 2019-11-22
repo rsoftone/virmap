@@ -88,6 +88,7 @@ export CC=/apps/gcc/4.9.0/wrapper/gcc
 
 #
 # On Raijin: this will build a multithreaded Perl with gcc 4.9 (needed for C++11), without Perl docs
+# On Gadi: We can use system gcc, and omit -Dcc=..
 #
 
 ./Configure -des -Dusethreads -Dprefix=$INSTALL_DIR -Dcc=/apps/gcc/4.9.0/wrapper/gcc -Dman1dir=none -Dman3dir=none
@@ -150,7 +151,13 @@ cpanm --local-lib=$INSTALL_DIR --force POSIX::RT::Semaphore
 
 cpanm --local-lib=$INSTALL_DIR Compress::Zstd
 
+# Sereal::Decoder can have trouble compiling the Zstd lib on Gadi, but will
+# happily compile against existing zstd, even though it can't use it properly.
+# Sereal's internal support for Zstd (i.e. *not* what is used by VirMap)
+# will be broken, and tests for that fail
+module load zstd
 cpanm --local-lib=$INSTALL_DIR --force Sereal
+module unload zstd
 
 cpanm --local-lib=$INSTALL_DIR Text::Levenshtein::Damerau::XS
 
