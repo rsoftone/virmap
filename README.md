@@ -166,6 +166,8 @@ cpanm --local-lib=$INSTALL_DIR Text::Levenshtein::XS
 
 cpanm --local-lib=$INSTALL_DIR Statistics::Basic
 
+cpanm --local-lib=$INSTALL_DIR Cpanel::JSON::XS
+
 module unload binutils
 
 cd $INSTALL_DIR/lib/perl5 && wget https://raw.githubusercontent.com/ucdavis-bioinformatics/assemblathon2-analysis/master/FAlite.pm
