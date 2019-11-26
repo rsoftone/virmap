@@ -72,8 +72,12 @@ EOF
 #  The next line is Raijin specific.  We need ~10GB  space to hold the source packages…
 # and Raijin $HOME is very limited in space…
 #
-export CONDA_PKGS_DIRS=/short/yi98/sy0928/pkgs
 #
+# The lines below are no longer needed for Gadi (re-enable them if you are on Raijin)
+#
+# export CONDA_PKGS_DIRS=/short/yi98/sy0928/pkgs
+#
+
 conda env create -f environment.yml 
 
 #
@@ -84,16 +88,23 @@ wget http://www.cpan.org/src/5.0/perl-5.28.0.tar.gz -O $TMPDIR/perl-5.28.0.tar.g
 cd $TMPDIR && tar zxvf perl-5.28.0.tar.gz
 cd perl-5.28.0
 
-module load gcc/4.9.0
-export CC=/apps/gcc/4.9.0/wrapper/gcc
+#
+# The lines below are no longer needed for Gadi (re-enable them if you are on Raijin)
+#
+# module load gcc/4.9.0
+# export CC=/apps/gcc/4.9.0/wrapper/gcc
 
 #
 # On Raijin: this will build a multithreaded Perl with gcc 4.9 (needed for C++11), without Perl docs
 # On Gadi: We can use system gcc, and omit -Dcc=..
 #
 
-./Configure -des -Dusethreads -Dprefix=$INSTALL_DIR -Dcc=/apps/gcc/4.9.0/wrapper/gcc -Dman1dir=none -Dman3dir=none
+#
+# The lines below are no longer needed for Gadi (re-enable them if you are on Raijin)
+#
+# ./Configure -des -Dusethreads -Dprefix=$INSTALL_DIR -Dcc=/apps/gcc/4.9.0/wrapper/gcc -Dman1dir=none -Dman3dir=none
 
+./Configure -des -Dusethreads -Dprefix=$INSTALL_DIR -Dman1dir=none -Dman3dir=none
 make
 make install
 
