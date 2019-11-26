@@ -118,10 +118,15 @@ cd $INSTALL_DIR && git clone https://github.com/cmmr/virmap.git
 # binutils is old on Raijin...load a module with updated /bin/as
 #
 
-module load binutils/2.32
+#
+# The lines below are no longer needed for Gadi (re-enable them if you are on Raijin)
+#
+# module load binutils/2.32
 
+#
 # Setup a simple activation script, usage:
 # source $INSTALL_DIR/activate.sh
+#
 
 cat - <<EOF >$INSTALL_DIR/activate.sh
 INSTALL_DIR=$INSTALL_DIR
@@ -139,6 +144,10 @@ conda activate virmap
 export PERL5LIB=\$INSTALL_DIR/lib/perl5
 export PATH=\$INSTALL_DIR/virmap:\$INSTALL_DIR/bin:\$PATH
 EOF
+
+#
+#
+#
 
 export PERL5LIB=$INSTALL_DIR/lib/perl5
 export PATH=$INSTALL_DIR/virmap:$INSTALL_DIR/bin:$PATH
@@ -201,7 +210,7 @@ perl -e 'use Compress::Zstd; use English; use Thread::Semaphore; use Thread::Que
 # as it was set in the previous session
 source $INSTALL_DIR/activate.sh
 
-module load gcc/4.9.0
+# module load gcc/4.9.0
 
 Virmap.pl
 
@@ -212,5 +221,5 @@ Virmap.pl
 which megahit
 
 # This should return:
-# $TMPDIR/envs/virmap/bin/megahit
+# $MINICONDA_DIR/envs/virmap/bin/megahit
 ```
