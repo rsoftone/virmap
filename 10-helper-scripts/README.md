@@ -421,7 +421,7 @@ Paramaters:
 
 ```bash
 #!/bin/bash
-#PBS -l nodes=1:ppn=48
+#PBS -l ncpus=48
 #PBS -l mem=64GB
 #PBS -l walltime=03:00:00
 #
@@ -432,7 +432,6 @@ Paramaters:
 #
 cd "${PBS_O_WORKDIR}"
 time ./60-construct-bbmap.sh /g/data/u71/VirMap/fasta-referencedbs/nucleotide /g/data/u71/VirMap/191126-virbb
-./
 ```
 ### Part 7: Build Diamond virus database
 
