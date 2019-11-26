@@ -415,6 +415,25 @@ Paramaters:
 ./60-construct-bbmap.sh path/to/genbank/nucleotide/fasta ./virBbmap
 ```
 
+**Gadi PBS script:**
+
+61-pbs-60-construct-bbmap.sh
+
+```bash
+#!/bin/bash
+#PBS -l nodes=1:ppn=48
+#PBS -l mem=64GB
+#PBS -l walltime=03:00:00
+#
+# Assumes you have followed previous section Part 4: Nucleotide .fasta generation
+# Expected form of qsub:
+#
+# qsub 61-pbs-60-construct-bbmap.sh
+#
+cd "${PBS_O_WORKDIR}"
+time ./60-construct-bbmap.sh /g/data/u71/VirMap/fasta-referencedbs/nucleotide /g/data/u71/VirMap/191126-virbb
+./
+```
 ### Part 7: Build Diamond virus database
 
 **Code files:**
