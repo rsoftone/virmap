@@ -405,7 +405,7 @@ Runtime: < 10 minutes (16 cores)
 
 **Usage:**
 
-Paramaters:
+Parameters:
 
 1. Path to the nucleotide FASTA files generated in [Part 4](#part-4-nucleotide-fasta-generation-using-katana-pbs-script)
 
@@ -431,6 +431,13 @@ Paramaters:
 # qsub 61-pbs-60-construct-bbmap.sh
 #
 cd "${PBS_O_WORKDIR}"
+
+MINICONDA_DIR=/scratch/u71/sy0928/tmp/miniconda3
+source $MINICONDA_DIR/etc/profile.d/conda.sh
+
+INSTALL_DIR=/scratch/u71/sy0928/tmp/virmap
+source $INSTALL_DIR/activate.sh
+
 time ./60-construct-bbmap.sh /g/data/u71/VirMap/fasta-referencedbs/nucleotide /g/data/u71/VirMap/191126-virbb
 ```
 ### Part 7: Build Diamond virus database
