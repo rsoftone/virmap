@@ -8,7 +8,7 @@
 * [Build Diamond virus database](#part-7-build-diamond-virus-database)
 * [Build Diamond genbank database (gbBlastx)](#part-7.5-build-diamond-genbank-database-gbblastx)
 * [Build Kraken2 database](#part-8-build-kraken2-database)
-
+* [Build blastn genbank database (gbBlastn)](#Part-9:-Build-blastn-genbank-database-gbBlastn)
 
 ### Part 1: Taxonomy database generation
 **Code files:**
@@ -564,4 +564,54 @@ Paramaters:
 
 ```bash
 ./80-construct-kraken2.sh path/to/genbank/nucleotide/fasta ./krakenDb
+```
+
+### Part 9: Build blastn genbank database (gbBlastn)
+
+**Code files:**
+
+* [90-construct-gbblastn.sh](./90-construct-gbblastn.sh)
+
+**Notes:**
+
+Generates a diamond database from all the used GenBank divisions.
+
+`makeblastdb` is singlethreaded, so 2 cores would be sufficient (`makeblastdb` + `sed`). On Gadi, however, SU is charged based on the greater of cores and mem/4 so we may as well request 8 cores to speed up the preprocessing slightly.
+
+Requires at least 150GB space in `$TMPDIR` (as found by `mktemp`). **N.B.** this size is based on the current subset of fasta files on Gadi and will likely need to be increased.
+
+**Usage:**
+
+Paramaters:
+
+1. Path to the nucleotide FASTA files generated in [Part 4](#part-4-nucleotide-fasta-generation-using-katana-pbs-script)
+
+2. Path to output the database file (default: `./gbBlastn`)
+
+```bash
+./90-construct-gbblastn.sh path/to/genbank/protein/fasta ./gbBlastn
+```
+
+**Gadi PBS script:**
+
+`91-pbs-90-construct-gbblastn.sh`
+
+```bash
+#!/bin/bash
+#PBS -l ncpus=8
+#PBS -l mem=32GB
+#PBS -l walltime=02:00:00
+#PBS -j oe
+#PBS -l wd
+#PBS -l jobfs=300GB
+#
+# Assumes you have followed previous section Part 4: Nucleotide .fasta generation
+# Expected form of qsub:
+#
+# qsub 91-pbs-90-construct-gbblastn.sh
+#
+
+source /scratch/u71/sy0928/tmp/virmap/activate.sh
+
+time ./90-construct-gbblastn.sh /g/data/u71/VirMap/fasta-referencedbs/nucleotide /g/data/u71/VirMap/191127-gbBlastn
 ```
