@@ -64,6 +64,7 @@ dependencies:
 - coreutils
 - kraken2
 - parallel
+- pv # not strictly required
 EOF
 
 #

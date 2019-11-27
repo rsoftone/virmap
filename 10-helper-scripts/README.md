@@ -6,6 +6,7 @@
 * [Protein .fasta generation](#part-5-protein-fasta-generation-using-katana-pbs-script)
 * [Build BBmap virus database](#part-6-build-bbmap-virus-database)
 * [Build Diamond virus database](#part-7-build-diamond-virus-database)
+* [Build Diamond genbank database (gbBlastx)](#part-7.5-build-diamond-genbank-database-gbblastx)
 * [Build Kraken2 database](#part-8-build-kraken2-database)
 
 
@@ -488,7 +489,54 @@ source $INSTALL_DIR/activate.sh
 time ./70-construct-virdmnd.sh /g/data/u71/VirMap/fasta-referencedbs/protein /g/data/u71/VirMap/191127-virdiamond
 ```
 
-# Part 8: Build Kraken2 database
+### Part 7.5: Build Diamond genbank database (gbBlastx)
+
+**Code files:**
+
+* [75-construct-gbblastx.sh](./75-construct-gbblastx.sh)
+
+**Notes:**
+
+Generates a diamond database from all the used GenBank divisions.
+
+Runtime: < 5 minutes (16 cores)
+
+**Usage:**
+
+Paramaters:
+
+1. Path to the protein FASTA files generated in [Part 5](#part-5-protein-fasta-generation-using-katana-pbs-script)
+
+2. Path to output the database file (default: `./gbBlastx`)
+
+```bash
+./75-construct-gbblastx.sh path/to/genbank/protein/fasta ./gbBlastx
+```
+
+**Gadi PBS script:**
+
+`76-pbs-75-construct-gbblastx.sh`
+
+```bash
+#!/bin/bash
+#PBS -l ncpus=48
+#PBS -l mem=64GB
+#PBS -l walltime=03:00:00
+#PBS -j oe
+#PBS -l wd
+#
+# Assumes you have followed previous section Part 5: Protein .fasta generation
+# Expected form of qsub:
+#
+# qsub 76-pbs-75-construct-gbblastx.sh
+#
+
+source /scratch/u71/sy0928/tmp/virmap/activate.sh
+
+time ./75-construct-gbblastx.sh /g/data/u71/VirMap/fasta-referencedbs/protein /g/data/u71/VirMap/191127-gbBlastx
+```
+
+### Part 8: Build Kraken2 database
 
 **Code files:**
 
