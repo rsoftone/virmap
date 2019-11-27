@@ -462,6 +462,32 @@ Paramaters:
 ./70-construct-virdmnd.sh path/to/genbank/protein/fasta ./virDmnd
 ```
 
+**Gadi PBS script:**
+
+71-pbs-70-construct-virdmnd.sh
+
+```bash
+#!/bin/bash
+#PBS -l ncpus=48
+#PBS -l mem=64GB
+#PBS -l walltime=03:00:00
+#
+# Assumes you have followed previous section Part 5: Protein .fasta generation
+# Expected form of qsub:
+#
+# qsub 71-pbs-70-construct-virdmnd.sh
+#
+cd "${PBS_O_WORKDIR}"
+
+MINICONDA_DIR=/scratch/u71/sy0928/tmp/miniconda3
+source $MINICONDA_DIR/etc/profile.d/conda.sh
+
+INSTALL_DIR=/scratch/u71/sy0928/tmp/virmap
+source $INSTALL_DIR/activate.sh
+
+time ./70-construct-bbmap.sh /g/data/u71/VirMap/fasta-referencedbs/protein /g/data/u71/VirMap/191127-virdiamond
+```
+
 # Part 8: Build Kraken2 database
 
 **Code files:**
