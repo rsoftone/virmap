@@ -485,7 +485,7 @@ source $MINICONDA_DIR/etc/profile.d/conda.sh
 INSTALL_DIR=/scratch/u71/sy0928/tmp/virmap
 source $INSTALL_DIR/activate.sh
 
-time ./70-construct-bbmap.sh /g/data/u71/VirMap/fasta-referencedbs/protein /g/data/u71/VirMap/191127-virdiamond
+time ./70-construct-virdmnd.sh /g/data/u71/VirMap/fasta-referencedbs/protein /g/data/u71/VirMap/191127-virdiamond
 ```
 
 # Part 8: Build Kraken2 database
