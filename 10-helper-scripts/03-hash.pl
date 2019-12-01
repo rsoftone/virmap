@@ -1,8 +1,8 @@
 #!/usr/bin/env perl
 use strict;
 use English '-no_match_vars';
-use Boulder::Genbank;
 use List::Util qw[min max];
+use Bio::SeqIO;
 
 my $input_fn = shift;
 my $genbFile = shift;
@@ -67,26 +67,28 @@ sub find_gi {
 	return binary_seek( $target, $pos, 512 );
 }
 
-my $gb = new Boulder::Genbank(
-	-accessor => 'File',
-	-fetch    => $genbFile
+my $seqio_object = Bio::SeqIO->new(
+	-file   => $genbFile,
+	-format => 'Genbank'
 );
-
 
 if ($@) {
 	print " Error: $@ ";
 	exit(-1);
 }
 
-while ( my $s = $gb->get ) {
-	my $seq_object = $s->bioSeq;
-
-	if ( $s->Features and $s->Features->Source and $s->Features->Source->Db_xref =~ m/taxon:(\d+)/ ) {
-		$genbank_taxonomy_id = $1;
+while ( my $seq_object = $seqio_object->next_seq() ) {
+	for my $feat_object ( $seq_object->get_SeqFeatures ) {
+		for my $tag ( $feat_object->get_all_tags ) {
+			for my $value ( $feat_object->get_tag_values($tag) ) {
+				if ( $value =~ m/taxon:(\d+)/ ) {
+					$genbank_taxonomy_id = $1;
+				}
+			}
+		}
 	}
-
-	$genbank_accession = $s->Accession;
-	$genbank_version   = $s->Version;
+	$genbank_accession = $seq_object->accession;
+	$genbank_version   = $seq_object->seq_version;
 
 	$lookupval = find_gi("$genbank_version");
 
@@ -94,10 +96,9 @@ while ( my $s = $gb->get ) {
 	if ($@) {
 		$lookupval = "NOT FOUND";
 	}
-	print ">gi|", $lookupval, "|", "gb", "|", $genbank_version, "|", $seq_object->desc,
+	print ">gi|", $lookupval, "|", "gb", "|", $genbank_accession, ".", $genbank_version, "|", $seq_object->desc,
 	  "...;taxId=", $genbank_taxonomy_id, "\n";
-
-	print uc( $s->Sequence ), "\n";
+	print $seq_object->seq, "\n";
 	print "\n";
 }
 
