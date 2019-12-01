@@ -81,7 +81,7 @@ if ($@) {
 while ( my $s = $gb->get ) {
 	my $seq_object = $s->bioSeq;
 
-	if ( $s->Features->Source->Db_xref =~ m/taxon:(\d+)/ ) {
+	if ( $s->Features and $s->Features->Source and $s->Features->Source->Db_xref =~ m/taxon:(\d+)/ ) {
 		$genbank_taxonomy_id = $1;
 	}
 
