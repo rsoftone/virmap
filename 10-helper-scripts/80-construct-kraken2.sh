@@ -8,6 +8,8 @@ function usage() {
 # Description:
 #     Helper script for building a kraken2 database from FASTA formatted
 #     Genbank Nucleotide divisions.
+#
+# Also accepts parameters via GENBANK_NUC, DEST_DB, NCPUS environment variables
 
 ###########################################################################
 #  Copyright 2019 University of New South Wales
@@ -30,14 +32,14 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
-if [[ $# -eq 0 ]]; then
+GENBANK_NUC="${1:-${GENBANK_NUC:-}}"
+DEST_DB="${2:-${DEST_DB:-krakenDb}}"
+THREADS="${3:-${PBS_NCPUS:-${NCPUS:-$(nproc)}}}"
+
+if [[ -z "$GENBANK_NUC" ]] || [[ -z "$DEST_DB" ]]; then
     usage
     exit 0
 fi
-
-GENBANK_NUC="$1"
-DEST_DB="${2:-krakenDb}"
-THREADS="${3:-${PBS_NCPUS:-${NCPUS:-$(nproc)}}}"
 
 if [[ -z "${3:-}" ]]; then
     echo "[+] Auto detected threads=$THREADS"

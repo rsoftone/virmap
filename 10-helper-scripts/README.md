@@ -493,6 +493,8 @@ Paramaters:
 
 3. Number of threads to use (default: autodetected)
 
+Also accepts parameters via `GENBANK_NUC`, `DEST_DB`, `NCPUS` environment variables.
+
 ```bash
 ./80-construct-kraken2.sh path/to/genbank/nucleotide/fasta ./krakenDb
 ```
