@@ -2,7 +2,7 @@
 * [Taxonomy database](#part-1-taxonomy-database-generation)
 * [Accession -> GI lookup](#part-2-accession---gi-lookup)
 * [Genbank downloads](#part-3-genbank-division-download)
-* [Nucleotide .fasta generation](#part-4-nucleotide-fasta-generation-using-katana-pbs-script)
+* [Nucleotide .fasta generation](#part-4-nucleotide-fasta-generation-using-gadi-pbs-script)
 * [Protein .fasta generation](#part-5-protein-fasta-generation-using-katana-pbs-script)
 * [Build BBmap virus database](#part-6-build-bbmap-virus-database)
 * [Build Diamond virus database](#part-7-build-diamond-virus-database)
@@ -26,6 +26,15 @@ cd ..
 #!/bin/bash
 GBACCLIST=GbAccList.0602.2019
 wget https://ftp.ncbi.nih.gov/genbank/livelists/${GBACCLIST}.gz
+
+# Note: If pigz is unavailable, substitute with gzip instead
+# The --buffer-size can be tuned as available, a smaller buffer will
+# result in a slower completion. Similarly, replace 32 with number of cores.
+#
+# N.B. On Gadi: Don't forget to request sufficient jobfs, as sort will
+# perform an external sort, requiring space in $TMPDIR (e.g. -l jobfs=150GB)
+pigz -dc "${GBACCLIST}.gz" | sort -t, -k1,1 --parallel=32 --buffer-size=110G > "${GBACCLIST}.sort"
+
 gunzip ${GBACCLIST}.gz
 
 # 
@@ -86,117 +95,39 @@ cd ..
 
 export PREFIXDB=gbvrl
 ```
-### Part 4: Nucleotide .fasta generation using Katana PBS script
-05-genbank-fasta-nucleo.sh
+
+### Part 4: Nucleotide .fasta generation using Gadi PBS script
+
+**Code files:**
+
+* [03-hash.pl](./03-hash.pl)
+* [05-genbank-fasta-nucleo.sh](./05-genbank-fasta-nucleo.sh)
+
+**Notes:**
+
+Genbank divisions are expected to still be in their compressed `.seq.gz` form.
+
+**Usage:**
+
+Paramaters:
+
+1. Path to sorted `GbAccList.sort` from [Part 2](#part-2-accession---gi-lookup)
+
+2. Path to folder containing Genbank divisions from [Part 3](#part-3-genbank-division-download)
+
+3. Number of threads to use (default: autodetected)
+
+```bash
+./05-genbank-fasta-nucleo.sh path/to/sorted/GbAccList path/to/genbank/divisions
 ```
-#!/bin/bash
-#PBS -l nodes=1:ppn=2
-#PBS -l mem=250gb
-#PBS -l walltime=03:00:00
-#
-# Assumes you have run the script in the previous section Part 3: Genbank division download
-#
-## Expected form of qsub:
-##
-## qsub -N "${PREFIXDB}"-protein -J 1-$(find "${GENBANKPATH}" -type f -name "${PREFIXDB}"*.seq|wc -l) -v PREFIXDB="${PREFIXDB}" 05-genbank-fasta-nucleo.sh 
-##
-## Output directory for .fasta file: converted/nucleotide
-##
-cd "${PBS_O_WORKDIR}"
 
-cd "${PBS_O_WORKDIR}"
+Expected `qsub` usage:
 
-PREFPATH=converted/nucleotide
-GENBANKPATH=genbank-ref
-TMPW=$(mktemp -d)
-
-GBIN=$(find $GENBANKPATH -type f -name "${PREFIXDB}*.seq"|sort -n|sed -n "${PBS_ARRAY_INDEX}p")
-SEQOUT=$(echo $GBIN|sed "s=$GENBANKPATH=$PREFPATH=g"|sed "s=.seq$=.fasta=g")
-
-echo "${PBS_ARRAY_INDEX}":...GenBank Division: $PREFIXDB
-echo "${PBS_ARRAY_INDEX}":...Input GenBank flat-file: $GBIN
-echo "${PBS_ARRAY_INDEX}":...Output FASTA: $SEQOUT
-
-time ./03-hash.pl <(cat part00 part01 part02 part03 part04 part05 part06 part07 part08 part09 part10 part11 part12 part13 part14 part15 part16 part17) "${GBIN}" > "${TMPW}/${PBS_ARRAY_INDEX}.fasta"
-
-#
-# Now copy results from TMP directory to final output location...
-#
-
-cp "${TMPW}/${PBS_ARRAY_INDEX}.fasta" "${SEQOUT}"
-rm -rf "${TMPW}"
+```bash
+qsub -v SORTED_GB_ACC_LIST="/path/to/GbAccList.sort" -v GENBANKPATH="path/to/genbank/divisions" /path/to/05-genbank-fasta-nucleo.sh
 ```
-03-hash.pl
-```
-#!/usr/bin/env perl
-use strict;
-use English '-no_match_vars';
-use Bio::SeqIO;
 
-my $input_fn = shift;
-my $genbFile = shift;
 
-my $input_fh;
-my $hhash;
-my $lookupval = "NONE";
-
-my $seqio_object;
-
-my $genbank_version;
-my $genbank_taxonomy_id;
-my $genbank_accession;
-my $genbank_version;
-
-my $delay_count = 0;
-my $delay_seconds = 0;
-
-# print $input_fn , "\n";
-open $input_fh, '<', $input_fn or die 'Could not open file: ', $OS_ERROR;
-while ( my $line = <$input_fh> ) {
-    chomp $line;
-    last if ! $line;
-    my ($accession,$version,$gi) = split /,/, $line, 3;
-    $hhash->{"$accession.$version"} = $gi;
-    # print $hhash->{"$accession.$version"}, "\n";
-    # sleep 1;
-}
-
-eval {
-    $seqio_object = Bio::SeqIO->new( -file => $genbFile
-                                   , -format => 'Genbank'
-                                   );
-};
-
-if( $@ ) {
-    print " Error: $@ ";
-    exit(-1);
-}
-
-while ( my $seq_object= $seqio_object->next_seq()) {
-    for my $feat_object ($seq_object->get_SeqFeatures) {
-        for my $tag ($feat_object->get_all_tags) {
-            for my $value ($feat_object->get_tag_values($tag)) {
-                if ($value =~ m/taxon:(\d+)/) {
-                    $genbank_taxonomy_id = $1;
-                }
-            }
-        }
-    }
-    $genbank_accession = $seq_object->accession;
-    $genbank_version   = $seq_object->seq_version;
-    eval {
-        $lookupval = $hhash->{"$genbank_accession.$genbank_version"};
-    };
-    if( $@ ) {
-        $lookupval = "NOT FOUND";
-    }
-    print ">gi|", $lookupval, "|", "gb", "|", $genbank_accession, ".", $genbank_version, "|", $seq_object->desc, "...;taxId=", $genbank_taxonomy_id, "\n";
-    print $seq_object->seq, "\n";
-    print "\n";
-}
-
-close $input_fh or die 'Could not close file: ', $OS_ERROR;
-```
 ### Part 5: Protein .fasta generation using Katana PBS script
 05-genbank-fasta-protein.sh 
 ```
