@@ -90,7 +90,7 @@ while ( my $seq_object = $seqio_object->next_seq() ) {
 	$genbank_accession = $seq_object->accession;
 	$genbank_version   = $seq_object->seq_version;
 
-	$lookupval = find_gi("$genbank_version");
+	$lookupval = find_gi("$genbank_accession.$genbank_version");
 
 	# if (! defined($lookupval)) {
 	if ($@) {
