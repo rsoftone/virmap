@@ -48,5 +48,5 @@ if [[ -e "$DEST_DB" ]]; then
     exit 1
 fi
 
-printf '%s\0' "$GENBANK_NUC/gbphg"* "$GENBANK_NUC/gbvrl"* | sort -zV | xargs -0 cat |
+printf '%s\0' "$GENBANK_NUC/gbphg"*.fasta "$GENBANK_NUC/gbvrl"*.fasta | sort -zV | xargs -0 cat |
     bbmap.sh -Xms"$RAM" -Xmx"$RAM" threads="$THREADS" ref=stdin path="$DEST_DB"

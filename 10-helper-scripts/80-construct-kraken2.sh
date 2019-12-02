@@ -62,11 +62,11 @@ fi
 
 if command -v parallel >/dev/null 2>/dev/null; then
     echo "[+] Using parallel to speed up library construction"
-    printf '%s\0' "$GENBANK_NUC/"* | sort -zV |
+    printf '%s\0' "$GENBANK_NUC/"*.fasta | sort -zV |
         parallel -j"$THREADS" -0tI '{}' kraken2-build --db "$DEST_DB" --add-to-library '{}'
 else
     echo "[-] parallel utility not found, library construction is essentially single threaded!"
-    printf '%s\0' "$GENBANK_NUC/"* | sort -zV |
+    printf '%s\0' "$GENBANK_NUC/"*.fasta | sort -zV |
         xargs -0tI '{}' kraken2-build --db "$DEST_DB" --add-to-library '{}'
 fi
 

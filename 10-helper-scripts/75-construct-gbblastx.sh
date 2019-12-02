@@ -47,22 +47,22 @@ if [[ -e "$DEST_DB" ]]; then
 fi
 
 GENBANK_DIV_FILES=(
-    "$GENBANK_AA/gbbct"*
-    "$GENBANK_AA/gbcon"*
-    "$GENBANK_AA/gbenv"*
-    "$GENBANK_AA/gbhtc"*
-    "$GENBANK_AA/gbinv"*
-    "$GENBANK_AA/gbmam"*
-    "$GENBANK_AA/gbpat"*
-    "$GENBANK_AA/gbphg"*
-    "$GENBANK_AA/gbpln"*
-    "$GENBANK_AA/gbpri"*
-    "$GENBANK_AA/gbrod"*
-    "$GENBANK_AA/gbsts"*
-    "$GENBANK_AA/gbsyn"*
-    "$GENBANK_AA/gbuna"*
-    "$GENBANK_AA/gbvrl"*
-    "$GENBANK_AA/gbvrt"*
+    "$GENBANK_AA/gbbct"*.fasta
+    "$GENBANK_AA/gbcon"*.fasta
+    "$GENBANK_AA/gbenv"*.fasta
+    "$GENBANK_AA/gbhtc"*.fasta
+    "$GENBANK_AA/gbinv"*.fasta
+    "$GENBANK_AA/gbmam"*.fasta
+    "$GENBANK_AA/gbpat"*.fasta
+    "$GENBANK_AA/gbphg"*.fasta
+    "$GENBANK_AA/gbpln"*.fasta
+    "$GENBANK_AA/gbpri"*.fasta
+    "$GENBANK_AA/gbrod"*.fasta
+    "$GENBANK_AA/gbsts"*.fasta
+    "$GENBANK_AA/gbsyn"*.fasta
+    "$GENBANK_AA/gbuna"*.fasta
+    "$GENBANK_AA/gbvrl"*.fasta
+    "$GENBANK_AA/gbvrt"*.fasta
 )
 
 # Output progress if pv is available

@@ -50,22 +50,22 @@ if [[ -e "$DEST_DB" ]]; then
 fi
 
 GENBANK_DIV_FILES=(
-    "$GENBANK_NUC/gbbct"*
-    "$GENBANK_NUC/gbcon"*
-    "$GENBANK_NUC/gbenv"*
-    "$GENBANK_NUC/gbhtc"*
-    "$GENBANK_NUC/gbinv"*
-    "$GENBANK_NUC/gbmam"*
-    "$GENBANK_NUC/gbpat"*
-    "$GENBANK_NUC/gbphg"*
-    "$GENBANK_NUC/gbpln"*
-    "$GENBANK_NUC/gbpri"*
-    "$GENBANK_NUC/gbrod"*
-    "$GENBANK_NUC/gbsts"*
-    "$GENBANK_NUC/gbsyn"*
-    "$GENBANK_NUC/gbuna"*
-    "$GENBANK_NUC/gbvrl"*
-    "$GENBANK_NUC/gbvrt"*
+    "$GENBANK_NUC/gbbct"*.fasta
+    "$GENBANK_NUC/gbcon"*.fasta
+    "$GENBANK_NUC/gbenv"*.fasta
+    "$GENBANK_NUC/gbhtc"*.fasta
+    "$GENBANK_NUC/gbinv"*.fasta
+    "$GENBANK_NUC/gbmam"*.fasta
+    "$GENBANK_NUC/gbpat"*.fasta
+    "$GENBANK_NUC/gbphg"*.fasta
+    "$GENBANK_NUC/gbpln"*.fasta
+    "$GENBANK_NUC/gbpri"*.fasta
+    "$GENBANK_NUC/gbrod"*.fasta
+    "$GENBANK_NUC/gbsts"*.fasta
+    "$GENBANK_NUC/gbsyn"*.fasta
+    "$GENBANK_NUC/gbuna"*.fasta
+    "$GENBANK_NUC/gbvrl"*.fasta
+    "$GENBANK_NUC/gbvrt"*.fasta
 )
 
 TAX_MAP_FILE=$(mktemp)

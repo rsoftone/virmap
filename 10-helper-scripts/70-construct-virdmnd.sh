@@ -46,5 +46,5 @@ if [[ -e "$DEST_DB" ]]; then
     exit 1
 fi
 
-printf '%s\0' "$GENBANK_AA/gbphg"* "$GENBANK_AA/gbvrl"* | sort -zV | xargs -0 cat |
+printf '%s\0' "$GENBANK_AA/gbphg"*.fasta "$GENBANK_AA/gbvrl"*.fasta | sort -zV | xargs -0 cat |
     diamond makedb -d "$DEST_DB"
