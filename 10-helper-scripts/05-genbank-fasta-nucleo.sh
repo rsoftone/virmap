@@ -18,7 +18,7 @@
 #
 #PBS -l ncpus=1
 #PBS -l mem=1gb
-#PBS -l walltime=00:30:00
+#PBS -l walltime=04:00:00
 #PBS -l wd
 #PBS -j oe
 #
