@@ -109,7 +109,7 @@ Genbank divisions are expected to still be in their compressed `.seq.gz` form.
 
 **Usage:**
 
-Paramaters:
+Parameters:
 
 1. Path to sorted `GbAccList.sort` from [Part 2](#part-2-accession---gi-lookup)
 
@@ -339,7 +339,7 @@ Runtime: < 10 minutes (16 cores)
 
 Parameters:
 
-1. Path to the nucleotide FASTA files generated in [Part 4](#part-4-nucleotide-fasta-generation-using-katana-pbs-script)
+1. Path to the nucleotide FASTA files generated in [Part 4](#part-4-nucleotide-fasta-generation-using-gadi-pbs-script)
 
 2. Path to output the database folder (default: `./virBbmap`)
 
@@ -384,7 +384,7 @@ Runtime: < 5 minutes (16 cores)
 
 **Usage:**
 
-Paramaters:
+Parameters:
 
 1. Path to the protein FASTA files generated in [Part 5](#part-5-protein-fasta-generation-using-katana-pbs-script)
 
@@ -434,7 +434,7 @@ Runtime: < 5 minutes (16 cores)
 
 **Usage:**
 
-Paramaters:
+Parameters:
 
 1. Path to the protein FASTA files generated in [Part 5](#part-5-protein-fasta-generation-using-katana-pbs-script)
 
@@ -485,9 +485,9 @@ Runtime: 2-3 hours (48 cores - Gadi)
 
 **Usage:**
 
-Paramaters:
+Parameters:
 
-1. Path to the nucleotide FASTA files generated in [Part 4](#part-4-nucleotide-fasta-generation-using-katana-pbs-script)
+1. Path to the nucleotide FASTA files generated in [Part 4](#part-4-nucleotide-fasta-generation-using-gadi-pbs-script)
 
 2. Path to output the database folder (default: `./krakenDb`)
 
@@ -497,6 +497,15 @@ Also accepts parameters via `GENBANK_NUC`, `DEST_DB`, `NCPUS` environment variab
 
 ```bash
 ./80-construct-kraken2.sh path/to/genbank/nucleotide/fasta ./krakenDb
+```
+
+Expected `qsub` usage (cd'd to `10-helper-scripts`):
+
+```bash
+qsub -l walltime=6:00:00,mem=80G,ncpus=48,wd -j oe -N 80-construct-kraken2.sh <<EOF
+  source /scratch/u71/sy0928/tmp/virmap/activate.sh
+  ./80-construct-kraken2.sh /path/to/genbank/nucleotide/fasta ./krakenDb
+EOF
 ```
 
 ### Part 9: Build blastn genbank database (gbBlastn)
@@ -515,14 +524,14 @@ Requires at least 150GB space in `$TMPDIR` (as found by `mktemp`). **N.B.** this
 
 **Usage:**
 
-Paramaters:
+Parameters:
 
-1. Path to the nucleotide FASTA files generated in [Part 4](#part-4-nucleotide-fasta-generation-using-katana-pbs-script)
+1. Path to the nucleotide FASTA files generated in [Part 4](#part-4-nucleotide-fasta-generation-using-gadi-pbs-script)
 
 2. Path to output the database file (default: `./gbBlastn`)
 
 ```bash
-./90-construct-gbblastn.sh path/to/genbank/protein/fasta ./gbBlastn
+./90-construct-gbblastn.sh path/to/genbank/nucleotide/fasta ./gbBlastn
 ```
 
 **Gadi PBS script:**
