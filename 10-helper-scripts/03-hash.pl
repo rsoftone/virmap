@@ -35,7 +35,10 @@ sub binary_seek {
 
 	# make the assumption that a skip_amount of < 5 is indicative of skipping
 	# less than a line ==> i.e. can't be found
-	return undef if ( $skip_amount < 5 );
+	if ( $skip_amount < 2 ) {
+		seek $input_fh, $init_pos, 0;
+		return undef;
+	}
 
 	my $seek_pos = $init_pos + $skip_amount;
 	seek $input_fh, $seek_pos, 0;
@@ -43,7 +46,7 @@ sub binary_seek {
 
 	my ( $accssession_ver, $gi ) = next_accver();
 
-	if ( $accssession_ver gt $target ) {
+	if ( $accssession_ver gt $target or !defined $accssession_ver ) {
 		return binary_seek( $target, $init_pos, int( $skip_amount / 2 ) );
 	}
 	if ( $accssession_ver lt $target ) {
@@ -61,8 +64,11 @@ sub find_gi {
 	my $pos = tell $input_fh;
 	my ( $accssession_ver, $gi ) = next_accver();
 
-	return undef if ( $accssession_ver gt $target );
-	return $gi   if ( $accssession_ver eq $target );
+	if ( $accssession_ver gt $target ) {
+		seek $input_fh, $pos, 0;
+		return undef;
+	}
+	return $gi if ( $accssession_ver eq $target );
 
 	return binary_seek( $target, $pos, 512 );
 }
