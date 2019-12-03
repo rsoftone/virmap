@@ -520,7 +520,9 @@ Generates a diamond database from all the used GenBank divisions.
 
 `makeblastdb` is singlethreaded, so 2 cores would be sufficient (`makeblastdb` + `sed`). On Gadi, however, SU is charged based on the greater of cores and mem/4 so we may as well request 8 cores to speed up the preprocessing slightly.
 
-Requires at least 150GB space in `$TMPDIR` (as found by `mktemp`). **N.B.** this size is based on the current subset of fasta files on Gadi and will likely need to be increased.
+Requires at least 2GB space in `$TMPDIR` (as found by `mktemp`).
+
+Runtime: Approx 1 hour (Gadi)
 
 **Usage:**
 
@@ -545,7 +547,7 @@ Parameters:
 #PBS -l walltime=02:00:00
 #PBS -j oe
 #PBS -l wd
-#PBS -l jobfs=300GB
+#PBS -l jobfs=5GB
 #
 # Assumes you have followed previous section Part 4: Nucleotide .fasta generation
 # Expected form of qsub:
