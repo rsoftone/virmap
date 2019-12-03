@@ -107,6 +107,10 @@ export PREFIXDB=gbvrl
 
 Genbank divisions are expected to still be in their compressed `.seq.gz` form.
 
+`05-genbank-fasta-nucleo.sh` will abort if the `parallel` utility is missing
+and more than 1 thread is requested. Ensure either the appropriate module is loaded
+or a suitable Conda environment is activated.
+
 **Usage:**
 
 Parameters:
@@ -124,7 +128,10 @@ Parameters:
 Expected `qsub` usage:
 
 ```bash
-qsub -v SORTED_GB_ACC_LIST="/path/to/GbAccList.sort" -v GENBANKPATH="path/to/genbank/divisions" /path/to/05-genbank-fasta-nucleo.sh
+qsub -l walltime=4:00:00,mem=48G,ncpus=48,wd -j oe -N 05-genbank-fasta-nucleo.sh <<EOF
+  source /scratch/u71/sy0928/tmp/virmap/activate.sh
+  ./05-genbank-fasta-nucleo.sh path/to/sorted/GbAccList path/to/genbank/divisions
+EOF
 ```
 
 ### Part 5: Protein .fasta generation using Gadi PBS script

@@ -32,7 +32,7 @@ function usage() {
 #
 ## Expected form of qsub:
 ##
-## qsub -v SORTED_GB_ACC_LIST="${SORTED_GB_ACC_LIST}" -v GENBANKPATH="${GENBANKPATH}" 05-genbank-fasta-nucleo.sh
+## qsub -v SORTED_GB_ACC_LIST="${SORTED_GB_ACC_LIST}",GENBANKPATH="${GENBANKPATH}" 05-genbank-fasta-nucleo.sh
 ##
 ## Output directory for .fasta file: converted/nucleotide
 ##
@@ -73,6 +73,21 @@ function process() {
 export -f process
 export PREFPATH GENBANKPATH SORTED_GB_ACC_LIST SCRIPT_DIR
 
-printf '%s\0' "$GENBANKPATH/"*.seq.gz | sort -zV |
-    xargs -0I'{}' basename '{}' |
-    parallel -j"$THREADS" -tI'{}' process {}
+if command -v parallel >/dev/null 2>/dev/null; then
+    printf '%s\0' "$GENBANKPATH/"*.seq.gz | sort -zV |
+        xargs -0I'{}' basename '{}' |
+        parallel -j"$THREADS" -tI'{}' process {}
+else
+    if [[ "$THREADS" -gt 1 ]]; then
+        echo "[!] You requested/autodetected $THREADS, but parallel was not found in \$PATH."
+        echo "[!] Parallel is requierd by this script to use more than one thread,"
+        echo "[!] aborting to avoid wasting resources."
+        echo -e "\n\$PATH=$PATH"
+
+        exit 1
+    fi
+
+    printf '%s\0' "$GENBANKPATH/"*.seq.gz | sort -zV |
+        xargs -0I'{}' basename '{}' |
+        xargs -tI '{}' sh -c 'process {}'
+fi
