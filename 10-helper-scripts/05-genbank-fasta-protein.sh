@@ -1,34 +1,73 @@
 #!/bin/bash
-#PBS -l nodes=1:ppn=2
-#PBS -l mem=250gb
-#PBS -l walltime=03:00:00
+#PBS -l ncpus=48
+#PBS -l mem=48gb
+#PBS -l walltime=04:00:00
+#PBS -l wd
+#PBS -j oe
 #
 # Assumes you have run the script in the previous section Part 3: Genbank division download
 #
 ## Expected form of qsub:
 ##
-## qsub -N "${PREFIXDB}"-protein -J 1-$(find "${GENBANKPATH}" -type f -name "${PREFIXDB}"*.seq|wc -l) -v PREFIXDB="${PREFIXDB}" 05-genbank-fasta-protein.sh
+## qsub -v SORTED_GB_ACC_LIST="${SORTED_GB_ACC_LIST}",GENBANKPATH="${GENBANKPATH}" 05-genbank-fasta-protein.sh
 ##
 ## Output directory for .fasta file: converted/protein
 ##
 cd "${PBS_O_WORKDIR}"
 
+if [[ $# -eq 0 ]] && { [[ -z "${SORTED_GB_ACC_LIST:-}" ]] || [[ -z "${GENBANKPATH:-}" ]]; }; then
+    usage
+    exit 0
+fi
+
+SCRIPT_DIR="$(cd "$(dirname "$(readlink -e "${BASH_SOURCE[0]}")")" >/dev/null 2>&1 && pwd)"
 PREFPATH=converted/protein
-GENBANKPATH=genbank-ref
-TMPW=$(mktemp -d)
+mkdir -p "$PREFPATH"
 
-GBIN=$(find $GENBANKPATH -type f -name "${PREFIXDB}*.seq" | sort -n | sed -n "${PBS_ARRAY_INDEX}p")
-SEQOUT=$(echo $GBIN | sed "s=$GENBANKPATH=$PREFPATH=g" | sed "s=.seq$=.fasta=g")
+THREADS="${3:-${PBS_NCPUS:-${NCPUS:-$(nproc)}}}"
 
-echo "${PBS_ARRAY_INDEX}":...GenBank Division: $PREFIXDB
-echo "${PBS_ARRAY_INDEX}":...Input GenBank flat-file: $GBIN
-echo "${PBS_ARRAY_INDEX}":...Output FASTA: $SEQOUT
+if [[ -z "${SORTED_GB_ACC_LIST:-}" ]] || [[ -z "${GENBANKPATH:-}" ]]; then
+    SORTED_GB_ACC_LIST="$1"
+    GENBANKPATH="$2"
+fi
 
-time ./03-prot-hash.pl <(cat part00 part01 part02 part03 part04 part05 part06 part07 part08 part09 part10 part11 part12 part13 part14 part15 part16 part17) "${GBIN}" >"${TMPW}/${PBS_ARRAY_INDEX}.fasta"
+# Copy the GB-Acc mapping to ram as we need to search the entire file for each entry
+MEM_SORTED_GB_ACC_LIST=$(mktemp -up /dev/shm)
+rsync -avP "$SORTED_GB_ACC_LIST" "$MEM_SORTED_GB_ACC_LIST"
 
-#
-# Now copy results from TMP directory to final output location...
-#
+function process() {
+    local div_file=$GENBANKPATH/$1
+    local out_file=$PREFPATH/$(echo "$1" | sed "s=.seq.gz$=.fasta=g")
 
-cp "${TMPW}/${PBS_ARRAY_INDEX}.fasta" "${SEQOUT}"
-rm -rf "${TMPW}"
+    if [[ -s "${out_file}" ]]; then
+        echo "Skipping $1 as it appears to have been processed already"
+        return 0
+    fi
+
+    set -e
+    perl "$SCRIPT_DIR/03-prot-hash.pl" "$MEM_SORTED_GB_ACC_LIST" <(pigz -dc "$div_file") >"${out_file}.part"
+    mv "${out_file}.part" "${out_file}"
+}
+export -f process
+export PREFPATH GENBANKPATH MEM_SORTED_GB_ACC_LIST SCRIPT_DIR
+
+if command -v parallel >/dev/null 2>/dev/null; then
+    printf '%s\0' "$GENBANKPATH/"*.seq.gz | sort -zV |
+        xargs -0I'{}' basename '{}' |
+        parallel -j"$THREADS" -tI'{}' process {}
+else
+    if [[ "$THREADS" -gt 1 ]]; then
+        echo "[!] You requested/autodetected $THREADS, but parallel was not found in \$PATH."
+        echo "[!] Parallel is requierd by this script to use more than one thread,"
+        echo "[!] aborting to avoid wasting resources."
+        echo -e "\n\$PATH=$PATH"
+
+        exit 1
+    fi
+
+    printf '%s\0' "$GENBANKPATH/"*.seq.gz | sort -zV |
+        xargs -0I'{}' basename '{}' |
+        xargs -tI '{}' sh -c 'process {}'
+fi
+
+rm "$MEM_SORTED_GB_ACC_LIST"

@@ -3,7 +3,7 @@
 * [Accession -> GI lookup](#part-2-accession---gi-lookup)
 * [Genbank downloads](#part-3-genbank-division-download)
 * [Nucleotide .fasta generation](#part-4-nucleotide-fasta-generation-using-gadi-pbs-script)
-* [Protein .fasta generation](#part-5-protein-fasta-generation-using-katana-pbs-script)
+* [Protein .fasta generation](#part-5-protein-fasta-generation-using-gadi-pbs-script)
 * [Build BBmap virus database](#part-6-build-bbmap-virus-database)
 * [Build Diamond virus database](#part-7-build-diamond-virus-database)
 * [Build Diamond genbank database (gbBlastx)](#part-7.5-build-diamond-genbank-database-gbblastx)
@@ -127,15 +127,49 @@ Expected `qsub` usage:
 qsub -v SORTED_GB_ACC_LIST="/path/to/GbAccList.sort" -v GENBANKPATH="path/to/genbank/divisions" /path/to/05-genbank-fasta-nucleo.sh
 ```
 
-
-### Part 5: Protein .fasta generation using Katana PBS script
+### Part 5: Protein .fasta generation using Gadi PBS script
 
 **Code files:**
 
 * [03-prot-hash.pl](./03-prot-hash.pl)
 * [05-genbank-fasta-protein.sh](./05-genbank-fasta-protein.sh)
 
-**Note:** information from 'strand' determines the printed ordering 
+**Notes:**
+
+Genbank divisions are expected to still be in their compressed `.seq.gz` form.
+
+The entire `GbAccList.sort` fill will be copied to `/dev/shm`.
+
+`05-genbank-fasta-protein.sh` will abort if the `parallel` utility is missing
+and more than 1 thread is requested. Ensure either the appropriate module is loaded
+or a suitable Conda environment is activated.
+
+Runtime: Approx 2 hours (48 cores - Gadi)
+
+Information from 'strand' determines the printed ordering.
+
+**Usage:**
+
+Parameters:
+
+1. Path to sorted `GbAccList.sort` from [Part 2](#part-2-accession---gi-lookup)
+
+2. Path to folder containing Genbank divisions from [Part 3](#part-3-genbank-division-download)
+
+3. Number of threads to use (default: autodetected)
+
+```bash
+./05-genbank-fasta-protein.sh path/to/sorted/GbAccList path/to/genbank/divisions
+```
+
+Expected `qsub` usage:
+
+```bash
+qsub -l walltime=4:00:00,mem=48G,ncpus=48,wd -j oe -N 05-genbank-fasta-protein.sh <<EOF
+  source /scratch/u71/sy0928/tmp/virmap/activate.sh
+  ./05-genbank-fasta-protein.sh path/to/sorted/GbAccList path/to/genbank/divisions
+EOF
+```
 
 ### Part 6: Build BBmap virus database
 
@@ -200,7 +234,7 @@ Runtime: < 5 minutes (16 cores)
 
 Parameters:
 
-1. Path to the protein FASTA files generated in [Part 5](#part-5-protein-fasta-generation-using-katana-pbs-script)
+1. Path to the protein FASTA files generated in [Part 5](#part-5-protein-fasta-generation-using-gadi-pbs-script)
 
 2. Path to output the database file (default: `./virDmnd`)
 
@@ -250,7 +284,7 @@ Runtime: < 5 minutes (16 cores)
 
 Parameters:
 
-1. Path to the protein FASTA files generated in [Part 5](#part-5-protein-fasta-generation-using-katana-pbs-script)
+1. Path to the protein FASTA files generated in [Part 5](#part-5-protein-fasta-generation-using-gadi-pbs-script)
 
 2. Path to output the database file (default: `./gbBlastx`)
 

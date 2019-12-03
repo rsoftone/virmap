@@ -1,13 +1,13 @@
 #!/usr/bin/env perl
 use strict;
 use English '-no_match_vars';
+use List::Util qw[min max];
 use Bio::SeqIO;
 
 my $input_fn = shift;
 my $genbFile = shift;
 
 my $input_fh;
-my $hhash;
 my $nlookupval = "NONE";
 my $plookupval = "NONE";
 
@@ -17,7 +17,6 @@ my $loc;
 my $genbank_version;
 my $genbank_taxonomy_id;
 my $genbank_accession;
-my $genbank_version;
 my $genbank_protein_id;
 my $genbank_protein_translation;
 my $genbank_protein_location;
@@ -25,19 +24,61 @@ my $genbank_protein_product;
 my $genbank_protein_codonStart;
 my $genbank_protein_pos;
 
-my $delay_count   = 0;
-my $delay_seconds = 0;
-
-# print $input_fn , "\n";
 open $input_fh, '<', $input_fn or die 'Could not open file: ', $OS_ERROR;
-while ( my $line = <$input_fh> ) {
-	chomp $line;
-	last if !$line;
-	my ( $accession, $version, $gi ) = split /,/, $line, 3;
-	$hhash->{"$accession.$version"} = $gi;
 
-	# print $hhash->{"$accession.$version"}, "\n";
-	# sleep 1;
+
+sub next_accver {
+	my $line = <$input_fh>;
+	chomp $line;
+	return undef if !$line;
+	my ( $accession, $version, $gi ) = split /,/, $line, 3;
+	return "$accession.$version", $gi;
+}
+
+# binary_seek will gradually increase skip_amount to a max of 1GiB when it
+# undershoots the target accession, allowing skip_amount to be initially low
+# as it's common for the accessions of interest to be relatively clustered.
+sub binary_seek {
+	my $target      = $_[0];
+	my $init_pos    = $_[1];
+	my $skip_amount = $_[2];
+
+	if ( $skip_amount < 2 ) {
+		seek $input_fh, $init_pos, 0;
+		return undef;
+	}
+
+	my $seek_pos = $init_pos + $skip_amount;
+	seek $input_fh, $seek_pos, 0;
+	readline $input_fh;    # jump to the start of a line
+
+	my ( $accssession_ver, $gi ) = next_accver();
+
+	if ( $accssession_ver gt $target or !defined $accssession_ver ) {
+		return binary_seek( $target, $init_pos, int( $skip_amount / 2 ) );
+	}
+	if ( $accssession_ver lt $target ) {
+		return binary_seek( $target, $seek_pos, min( $skip_amount * 2, 1073741824 ) );
+	}
+	return $gi if ( $accssession_ver eq $target );
+
+	die "what?";
+}
+
+# simple driver around lookingup up gi from accession using binary_seek
+sub find_gi {
+	my $target = $_[0];
+
+	my $pos = tell $input_fh;
+	my ( $accssession_ver, $gi ) = next_accver();
+
+	if ( $accssession_ver gt $target ) {
+		seek $input_fh, $pos, 0;
+		return undef;
+	}
+	return $gi if ( $accssession_ver eq $target );
+
+	return binary_seek( $target, $pos, 536870912 );
 }
 
 eval { $seqio_object = Bio::SeqIO->new( -file => $genbFile, -format => 'Genbank' ); };
@@ -120,11 +161,14 @@ while ( my $seq_object = $seqio_object->next_seq() ) {
 					# print $genbank_protein_codonStart, "\n";
 				}
 			}
-			eval { $nlookupval = $hhash->{"$genbank_accession.$genbank_version"}; };
+
+			seek $input_fh, 0, 0;    #  search the entire map file
+			$nlookupval = find_gi("$genbank_accession.$genbank_version");
 			if ($@) {
 				$nlookupval = "NOT FOUND";
 			}
-			eval { $plookupval = $hhash->{"$genbank_protein_id"}; };
+			seek $input_fh, 0, 0;    #  search the entire map file
+			$plookupval = find_gi("$genbank_protein_id");
 			if ($@) {
 				$plookupval = "NOT FOUND";
 			}
@@ -139,14 +183,6 @@ while ( my $seq_object = $seqio_object->next_seq() ) {
 			print "\n";
 		}
 	}
-
-	# eval {
-	#     $lookupval = $hhash->{"$genbank_accession.$genbank_version"};
-	# };
-	# if( $@ ) {
-	#     $lookupval = "NOT FOUND";
-	# }
-
 }
 
 close $input_fh or die 'Could not close file: ', $OS_ERROR;
