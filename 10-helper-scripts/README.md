@@ -334,6 +334,8 @@ This is an optional step, only required if use of `krakenFilter` is desired.
 
 Also see: [VirMap Parameters](../parameters.md)
 
+Due to the use of `parallel` to speed up fasta ingestion, the default `maximum open file descriptors` (`ulimit -n`) may be too small on some systems for the number of threads chosen. 87 per thread is a ballpark guess of the max number of descriptors required.
+
 Requires: 50-80G RAM
 
 Runtime: 2-3 hours (48 cores - Gadi)
