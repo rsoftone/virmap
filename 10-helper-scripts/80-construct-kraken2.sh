@@ -53,6 +53,25 @@ fi
 # kraken2-build from using multiple threads
 unset OMP_NUM_THREADS
 
+GENBANK_DIV_FILES=(
+    "$GENBANK_NUC/gbbct"*.fasta
+    # "$GENBANK_NUC/gbcon"*.fasta
+    "$GENBANK_NUC/gbenv"*.fasta
+    "$GENBANK_NUC/gbhtc"*.fasta
+    "$GENBANK_NUC/gbinv"*.fasta
+    "$GENBANK_NUC/gbmam"*.fasta
+    "$GENBANK_NUC/gbpat"*.fasta
+    "$GENBANK_NUC/gbphg"*.fasta
+    "$GENBANK_NUC/gbpln"*.fasta
+    "$GENBANK_NUC/gbpri"*.fasta
+    "$GENBANK_NUC/gbrod"*.fasta
+    "$GENBANK_NUC/gbsts"*.fasta
+    "$GENBANK_NUC/gbsyn"*.fasta
+    "$GENBANK_NUC/gbuna"*.fasta
+    "$GENBANK_NUC/gbvrl"*.fasta
+    "$GENBANK_NUC/gbvrt"*.fasta
+)
+
 if [[ ! -d "$DEST_DB/taxonomy" ]]; then
     echo "[+] Downloading taxonomy data for kraken2.."
     echo "[+] If this fails (e.g. due to no network access in job), run the following command elsewhere:"
@@ -64,11 +83,11 @@ fi
 
 if command -v parallel >/dev/null 2>/dev/null; then
     echo "[+] Using parallel to speed up library construction"
-    printf '%s\0' "$GENBANK_NUC/"*.fasta | sort -zV |
+    printf '%s\0' "${GENBANK_DIV_FILES[@]}" | sort -zV |
         parallel -j"$THREADS" -0tI '{}' kraken2-build --db "$DEST_DB" --add-to-library '{}'
 else
     echo "[-] parallel utility not found, library construction is essentially single threaded!"
-    printf '%s\0' "$GENBANK_NUC/"*.fasta | sort -zV |
+    printf '%s\0' "${GENBANK_DIV_FILES[@]}" | sort -zV |
         xargs -0tI '{}' kraken2-build --db "$DEST_DB" --add-to-library '{}'
 fi
 
