@@ -51,9 +51,19 @@ function process() {
 export -f process
 export PREFPATH GENBANKPATH MEM_SORTED_GB_ACC_LIST SCRIPT_DIR
 
+# sort by filesize descending, ideally would sort on head -n 8 | tail -n 1 | tr -s ' ' | cut -d ' ' -f 7
+function get_gb_divs() {
+    NUM_GROUPS=${NUM_GROUPS:-1}
+    GROUP_INDEX=${GROUP_INDEX:-0}
+
+    gzip -l "$GENBANKPATH/"*.seq.gz | tail -n +2 | head -n -1 |
+        sort -rnk 2,2 | tr -s ' ' | cut -d ' ' -f 5 | sed 's/$/.gz/' |
+        xargs -I'{}' basename '{}' |
+        awk "(NR + $GROUP_INDEX) % $NUM_GROUPS == 0"
+}
+
 if command -v parallel >/dev/null 2>/dev/null; then
-    printf '%s\0' "$GENBANKPATH/"*.seq.gz | sort -zV |
-        xargs -0I'{}' basename '{}' |
+    get_gb_divs |
         parallel -j"$THREADS" -tI'{}' process {}
 else
     if [[ "$THREADS" -gt 1 ]]; then
@@ -65,9 +75,9 @@ else
         exit 1
     fi
 
-    printf '%s\0' "$GENBANKPATH/"*.seq.gz | sort -zV |
-        xargs -0I'{}' basename '{}' |
+    get_gb_divs |
         xargs -tI '{}' sh -c 'process {}'
 fi
 
 rm "$MEM_SORTED_GB_ACC_LIST"
+echo "Finished!"
