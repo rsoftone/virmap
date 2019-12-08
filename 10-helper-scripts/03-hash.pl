@@ -10,6 +10,7 @@ my $genbFile = shift;
 my $input_fh;
 my $lookupval = "NONE";
 
+my $header;
 my $genbank_taxonomy_id;
 my $genbank_accession;
 my $genbank_version;
@@ -102,8 +103,13 @@ while ( my $seq_object = $seqio_object->next_seq() ) {
 	if ($@) {
 		$lookupval = "NOT FOUND";
 	}
-	print ">gi|", $lookupval, "|", "gb", "|", $genbank_accession, ".", $genbank_version, "|", $seq_object->desc,
-	  "...;taxId=", $genbank_taxonomy_id, "\n";
+	$header =
+		">gi|$lookupval|gb|$genbank_accession.$genbank_version|"
+	  . $seq_object->desc
+	  . ",...;taxId=$genbank_taxonomy_id\n";
+
+	$header =~ tr/ /./;
+	print $header;
 	print $seq_object->seq, "\n";
 	print "\n";
 }

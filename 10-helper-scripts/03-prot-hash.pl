@@ -14,6 +14,7 @@ my $plookupval = "NONE";
 my $seqio_object;
 my $loc;
 
+my $header;
 my $genbank_version;
 my $genbank_taxonomy_id;
 my $genbank_accession;
@@ -175,10 +176,12 @@ while ( my $seq_object = $seqio_object->next_seq() ) {
 			#
 			# Print the protein entry to Fasta file here
 			#
-			print ">GI|GI:", $nlookupval, "|", $genbank_accession, ".", $genbank_version, "|", $genbank_protein_id,
-			  "|GI:", $plookupval, "|", $genbank_protein_product, "|", $seq_object->desc, ";pos=",
-			  $genbank_protein_location, ";codonStart=", $genbank_protein_codonStart, ";taxId=", $genbank_taxonomy_id,
-			  "\n";
+			$header =
+">GI|GI:$nlookupval|$genbank_accession.$genbank_version|$genbank_protein_id|GI:$plookupval|$genbank_protein_product|"
+			  . $seq_object->desc
+			  . ";pos=$genbank_protein_location;codonStart=$genbank_protein_codonStart;taxId=$genbank_taxonomy_id\n";
+			$header =~ tr/ /./;
+			print $header;
 			print $genbank_protein_translation, "\n";
 			print "\n";
 		}
