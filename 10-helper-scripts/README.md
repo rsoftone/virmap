@@ -285,7 +285,7 @@ time ./70-construct-virdmnd.sh /g/data/u71/VirMap/fasta-referencedbs/protein /g/
 
 Generates a diamond database from all the used GenBank divisions.
 
-Runtime: < 5 minutes (16 cores)
+Runtime: < 15 minutes (48 cores - Gadi)
 
 **Usage:**
 
