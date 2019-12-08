@@ -51,7 +51,7 @@ fi
 
 GENBANK_DIV_FILES=(
     "$GENBANK_NUC/gbbct"*.fasta
-    "$GENBANK_NUC/gbcon"*.fasta
+    # "$GENBANK_NUC/gbcon"*.fasta
     "$GENBANK_NUC/gbenv"*.fasta
     "$GENBANK_NUC/gbhtc"*.fasta
     "$GENBANK_NUC/gbinv"*.fasta
