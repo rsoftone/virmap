@@ -53,7 +53,7 @@ channels:
 dependencies:
 - diamond
 - blast
-- bbmap=38.69 # versions after this introduce spaces into the fasta header
+- bbmap=38.67 # versions after this introduce spaces into the fasta header
 - megahit
 - khmer
 - vsearch
