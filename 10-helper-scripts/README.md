@@ -15,14 +15,14 @@
 - 10-construct-taxa/10-construct-taxa.pl
 
 **Usage:**
-```
+```bash
 cd 10-construct-taxa
 ./01-construct-taxa.sh
 cd ..
 ```
 
 ### Part 2: Accession -> GI lookup
-```
+```bash
 #!/bin/bash
 GBACCLIST=GbAccList.0602.2019
 wget https://ftp.ncbi.nih.gov/genbank/livelists/${GBACCLIST}.gz
@@ -58,7 +58,7 @@ split -d -l 64000000 ${GBACCLIST} part
 ```
 
 ### Part 3: Genbank division download
-```
+```bash
 #
 # Assumes you have run the script in the previous section Part 2: Accession -> GI lookup
 #
