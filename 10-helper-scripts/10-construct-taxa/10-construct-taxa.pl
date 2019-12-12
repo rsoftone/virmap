@@ -1,12 +1,12 @@
 #!/usr/bin/env perl
 # 10-construct-taxa.pl
 #
-# Usage: 
+# Usage:
 #     ./10-construct-taxa.pl path/to/ncbi-taxonomy-dir
 #
 # See example driver script: 01-construct-taxa.sh
 #
-# Description: 
+# Description:
 #     Perl script for converting NCBI Taxonomy data into the Sereal-encoded
 #     + zstd compressed Perl hash reference needed by VirMAP
 
@@ -26,27 +26,27 @@
 #  limitations under the License.
 #
 ###########################################################################
-# 
+#
 use strict;
 use warnings;
 use English '-no_match_vars';
 use Sereal;
 use Compress::Zstd qw(compress);
- 
-if ($#ARGV + 1 < 1) {
-    print "\nUsage: 10-construct-taxa.pl /path/to/ncbi/taxdump\n";
-    exit;
+
+if ( $#ARGV + 1 < 1 ) {
+	print "\nUsage: 10-construct-taxa.pl /path/to/ncbi/taxdump\n";
+	exit;
 }
- 
+
 my $basePath = $ARGV[0];
 my $outputFn = "taxaJson.dat";
- 
+
 my $children = {};
 my $parents  = {};
 my $ranks    = {};
 my $names    = {};
- 
- 
+
+
 sub loadNodes {
 	my $filename = "$basePath/nodes.dmp";
 	open( my $fh => $filename ) || die "Could not open $filename: $!";
@@ -58,34 +58,35 @@ sub loadNodes {
 			$isInheritedMitochondrialGeneticCode, $isHiddenInGenbank,      $isSubtreeHidden,
 			$comments
 		) = split /\t\|\t/, $line;
- 
+
 		$parents->{$taxonomyID} .= $parentTaxonomyID;
 		$ranks->{$taxonomyID}   .= $taxonomyRank;
 		push @{ $children->{$parentTaxonomyID} }, $taxonomyID;
 	}
- 
+
 	close $fh;
 }
- 
- 
+
+
 sub loadNames {
 	my $namesFile = "$basePath/names.dmp";
 	open( my $fh => $namesFile ) || die "Could not open $namesFile: $!";
 	while ( my $line = <$fh> ) {
 		my ( $taxId, $nameTxt, $uniqueName, $nameClass ) = split /\t\|[\t\n]/, $line;
- 
+
 		# might want to use uniqueName instead, when present
 		if ( $nameClass eq "scientific name" ) {
 			$names->{$taxId} = $nameTxt;
 		}
 	}
- 
+
 	close $fh;
 }
- 
+
+loadMergedNodes;
 loadNodes;
 loadNames;
- 
+
 # construct the final hash of hashes to serealize
 my %taxdbData = (
 	children => $children,
@@ -93,7 +94,7 @@ my %taxdbData = (
 	names    => $names,
 	ranks    => $ranks,
 );
- 
+
 # dump it to the file in $outputFn
 my $encoder = Sereal::Encoder->new();
 open my $fh, '>:raw', $outputFn or die;
