@@ -45,6 +45,19 @@ my $children = {};
 my $parents  = {};
 my $ranks    = {};
 my $names    = {};
+my $merged   = {};
+
+
+sub loadMergedNodes {
+	my $filename = "$basePath/merged.dmp";
+	open( my $fh => $filename ) || die "Could not open $filename: $!";
+	while ( my $line = <$fh> ) {
+		my ( $oldID, $newID ) = split /\t\|[\t\n]/, $line;
+
+		push @{ $merged->{$newID} }, $oldID;
+	}
+	close $fh;
+}
 
 
 sub loadNodes {
@@ -62,6 +75,14 @@ sub loadNodes {
 		$parents->{$taxonomyID} .= $parentTaxonomyID;
 		$ranks->{$taxonomyID}   .= $taxonomyRank;
 		push @{ $children->{$parentTaxonomyID} }, $taxonomyID;
+
+		if ( exists $merged->{$taxonomyID} ) {
+			foreach my $oldTaxId ( @{ $merged->{$taxonomyID} } ) {
+				$parents->{$oldTaxId} .= $parentTaxonomyID;
+				$ranks->{$oldTaxId}   .= $taxonomyRank;
+				push @{ $children->{$parentTaxonomyID} }, $oldTaxId;
+			}
+		}
 	}
 
 	close $fh;
