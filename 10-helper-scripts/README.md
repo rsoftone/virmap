@@ -1,20 +1,26 @@
+# VirMAP helper scripts
+
 ## Quicklinks
-* [Taxonomy database](#part-1-taxonomy-database-generation)
-* [Accession -> GI lookup](#part-2-accession---gi-lookup)
-* [Genbank downloads](#part-3-genbank-division-download)
-* [Nucleotide .fasta generation](#part-4-nucleotide-fasta-generation-using-gadi-pbs-script)
-* [Protein .fasta generation](#part-5-protein-fasta-generation-using-gadi-pbs-script)
-* [Build BBmap virus database](#part-6-build-bbmap-virus-database)
-* [Build Diamond virus database](#part-7-build-diamond-virus-database)
-* [Build Diamond genbank database (gbBlastx)](#part-7.5-build-diamond-genbank-database-gbblastx)
-* [Build Kraken2 database](#part-8-build-kraken2-database)
-* [Build blastn genbank database (gbBlastn)](#Part-9:-Build-blastn-genbank-database-gbBlastn)
+
+- [Taxonomy database](#part-1-taxonomy-database-generation)
+- [Accession -> GI lookup](#part-2-accession---gi-lookup)
+- [Genbank downloads](#part-3-genbank-division-download)
+- [Nucleotide .fasta generation](#part-4-nucleotide-fasta-generation-using-gadi-pbs-script)
+- [Protein .fasta generation](#part-5-protein-fasta-generation-using-gadi-pbs-script)
+- [Build BBmap virus database](#part-6-build-bbmap-virus-database)
+- [Build Diamond virus database](#part-7-build-diamond-virus-database)
+- [Build Diamond genbank database (gbBlastx)](#part-7.5-build-diamond-genbank-database-gbblastx)
+- [Build Kraken2 database](#part-8-build-kraken2-database)
+- [Build blastn genbank database (gbBlastn)](#Part-9:-Build-blastn-genbank-database-gbBlastn)
 
 ### Part 1: Taxonomy database generation
-**Code files:**
+
+#### Code files
+
 - 10-construct-taxa/10-construct-taxa.pl
 
-**Usage:**
+#### Usage
+
 ```bash
 cd 10-construct-taxa
 ./01-construct-taxa.sh
@@ -22,6 +28,7 @@ cd ..
 ```
 
 ### Part 2: Accession -> GI lookup
+
 ```bash
 #!/bin/bash
 GBACCLIST=GbAccList.0602.2019
@@ -38,6 +45,7 @@ pigz -dc "${GBACCLIST}.gz" |
 ```
 
 ### Part 3: Genbank division download
+
 ```bash
 #
 # Assumes you have run the script in the previous section Part 2: Accession -> GI lookup
@@ -46,13 +54,13 @@ pigz -dc "${GBACCLIST}.gz" |
 #
 # Now download the Genbank division you want to the $GENBANKPATH directory (eg gbvrl):
 #
- 
+
 export GENBANKPATH=genbank-ref
 mkdir -p $GENBANKPATH
 
 #
 # Retrieve the list in ftp://ftp.ncbi.nlm.nih.gov/genbank
-# 
+#
 
 wget --no-remove-listing ftp://ftp.ncbi.nlm.nih.gov/genbank
 
@@ -78,12 +86,12 @@ export PREFIXDB=gbvrl
 
 ### Part 4: Nucleotide .fasta generation using Gadi PBS script
 
-**Code files:**
+#### Code files
 
-* [03-hash.pl](./03-hash.pl)
-* [05-genbank-fasta-nucleo.sh](./05-genbank-fasta-nucleo.sh)
+- [03-hash.pl](./03-hash.pl)
+- [05-genbank-fasta-nucleo.sh](./05-genbank-fasta-nucleo.sh)
 
-**Notes:**
+#### Notes
 
 Genbank divisions are expected to still be in their compressed `.seq.gz` form.
 
@@ -91,7 +99,7 @@ Genbank divisions are expected to still be in their compressed `.seq.gz` form.
 and more than 1 thread is requested. Ensure either the appropriate module is loaded
 or a suitable Conda environment is activated.
 
-**Usage:**
+#### Usage
 
 Parameters:
 
@@ -116,12 +124,12 @@ EOF
 
 ### Part 5: Protein .fasta generation using Gadi PBS script
 
-**Code files:**
+#### Code files
 
-* [03-prot-hash.pl](./03-prot-hash.pl)
-* [05-genbank-fasta-protein.sh](./05-genbank-fasta-protein.sh)
+- [03-prot-hash.pl](./03-prot-hash.pl)
+- [05-genbank-fasta-protein.sh](./05-genbank-fasta-protein.sh)
 
-**Notes:**
+#### Notes
 
 Genbank divisions are expected to still be in their compressed `.seq.gz` form.
 
@@ -135,7 +143,7 @@ Runtime: Approx 2 hours (48 cores - Gadi)
 
 Information from 'strand' determines the printed ordering.
 
-**Usage:**
+#### Usage
 
 Parameters:
 
@@ -160,17 +168,17 @@ EOF
 
 ### Part 6: Build BBmap virus database
 
-**Code files:**
+#### Code files
 
-* [60-construct-bbmap.sh](./60-construct-bbmap.sh)
+- [60-construct-bbmap.sh](./60-construct-bbmap.sh)
 
-**Notes:**
+#### Notes
 
 Requires 30-45G RAM - max heap size is specified as 40G.
 
 Runtime: < 10 minutes (16 cores)
 
-**Usage:**
+#### Usage
 
 Parameters:
 
@@ -182,7 +190,7 @@ Parameters:
 ./60-construct-bbmap.sh path/to/genbank/nucleotide/fasta ./virBbmap
 ```
 
-**Gadi PBS script:**
+#### Gadi PBS script
 
 61-pbs-60-construct-bbmap.sh
 
@@ -207,17 +215,18 @@ source $INSTALL_DIR/activate.sh
 
 time ./60-construct-bbmap.sh /g/data/u71/VirMap/fasta-referencedbs/nucleotide /g/data/u71/VirMap/191126-virbb
 ```
+
 ### Part 7: Build Diamond virus database
 
-**Code files:**
+#### Code files
 
-* [70-construct-virdmnd.sh](./70-construct-virdmnd.sh)
+- [70-construct-virdmnd.sh](./70-construct-virdmnd.sh)
 
-**Notes:**
+#### Notes
 
 Runtime: < 5 minutes (16 cores)
 
-**Usage:**
+#### Usage
 
 Parameters:
 
@@ -229,7 +238,7 @@ Parameters:
 ./70-construct-virdmnd.sh path/to/genbank/protein/fasta ./virDmnd
 ```
 
-**Gadi PBS script:**
+#### Gadi PBS script
 
 71-pbs-70-construct-virdmnd.sh
 
@@ -257,17 +266,17 @@ time ./70-construct-virdmnd.sh /g/data/u71/VirMap/fasta-referencedbs/protein /g/
 
 ### Part 7.5: Build Diamond genbank database (gbBlastx)
 
-**Code files:**
+#### Code files
 
-* [75-construct-gbblastx.sh](./75-construct-gbblastx.sh)
+- [75-construct-gbblastx.sh](./75-construct-gbblastx.sh)
 
-**Notes:**
+#### Notes
 
 Generates a diamond database from all the used GenBank divisions.
 
 Runtime: < 15 minutes (48 cores - Gadi)
 
-**Usage:**
+#### Usage
 
 Parameters:
 
@@ -279,7 +288,7 @@ Parameters:
 ./75-construct-gbblastx.sh path/to/genbank/protein/fasta ./gbBlastx
 ```
 
-**Gadi PBS script:**
+#### Gadi PBS script
 
 `76-pbs-75-construct-gbblastx.sh`
 
@@ -304,11 +313,11 @@ time ./75-construct-gbblastx.sh /g/data/u71/VirMap/fasta-referencedbs/protein /g
 
 ### Part 8: Build Kraken2 database
 
-**Code files:**
+#### Code files
 
-* [80-construct-kraken2.sh](./80-construct-kraken2.sh)
+- [80-construct-kraken2.sh](./80-construct-kraken2.sh)
 
-**Notes:**
+#### Notes
 
 This is an optional step, only required if use of `krakenFilter` is desired.
 
@@ -320,7 +329,7 @@ Requires: 50-80G RAM
 
 Runtime: 2-3 hours (48 cores - Gadi)
 
-**Usage:**
+#### Usage
 
 Parameters:
 
@@ -347,11 +356,11 @@ EOF
 
 ### Part 9: Build blastn genbank database (gbBlastn)
 
-**Code files:**
+#### Code files
 
-* [90-construct-gbblastn.sh](./90-construct-gbblastn.sh)
+- [90-construct-gbblastn.sh](./90-construct-gbblastn.sh)
 
-**Notes:**
+#### Notes
 
 Generates a diamond database from all the used GenBank divisions.
 
@@ -361,7 +370,7 @@ Requires at least 2GB space in `$TMPDIR` (as found by `mktemp`).
 
 Runtime: Approx 1 hour (Gadi)
 
-**Usage:**
+#### Usage
 
 Parameters:
 
@@ -373,7 +382,7 @@ Parameters:
 ./90-construct-gbblastn.sh path/to/genbank/nucleotide/fasta ./gbBlastn
 ```
 
-**Gadi PBS script:**
+#### Gadi PBS script
 
 `91-pbs-90-construct-gbblastn.sh`
 
