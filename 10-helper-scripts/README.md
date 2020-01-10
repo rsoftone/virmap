@@ -117,11 +117,6 @@ do
     anonftp@ftp.ncbi.nlm.nih.gov:/genbank/${aseq} ${GENBANKPATH}/.  
 
 done < gbvrl.txt
-
-cd ${GENBANKPATH} && find -type f -exec gunzip \{\} \;
-cd ..
-
-export PREFIXDB=gbvrl
 ```
 
 ### Part 4: Nucleotide .fasta generation using Gadi PBS script
