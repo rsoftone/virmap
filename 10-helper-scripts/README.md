@@ -13,6 +13,44 @@
 - [Build Kraken2 database](#part-8-build-kraken2-database)
 - [Build blastn genbank database (gbBlastn)](#Part-9:-Build-blastn-genbank-database-gbBlastn)
 
+## Gadi specific instructions
+
+Jobs submitted to Gadi share a set of common arguments (specifying project, jobfs and storage requirements). To avoid repeating these everywhere, we store them in a shell variable. Which is assumed to have been executed/loaded before running any `qsub` commands in the rest of this document.
+
+### Common qsub args snippet
+
+```bash
+# Use the u71 project and request its scratch and gdata folders be available
+# along with 300GB of jobfs space (i.e. space under $TMP_DIR during a job)
+COMMON_QSUB_ARGS="-P u71 -lstorage=scratch/u71+gdata/u71,jobfs=300GB"
+```
+
+However, you may use either of these equivalent forms:
+
+- Run the snippet above to set the `COMMON_QSUB_ARGS` shell variable and use `$$COMMON_QSUB_ARGS` in `qsub` parameters:
+  - e.g.
+
+  ```bash
+  COMMON_QSUB_ARGS="-P u71 -lstorage=scratch/u71+gdata/u71,jobfs=300GB"
+
+  # Later ...
+
+  qsub $COMMON_QSUB_ARGS -other -args -as -required script.sh
+
+  qsub $COMMON_QSUB_ARGS -more -other -args -as -required script2.sh
+  ```
+
+- Include the parameters verbatim in the `qsub` parameters:
+  - e.g.
+
+  ```bash
+  qsub -P u71 -lstorage=scratch/u71+gdata/u71,jobfs=300GB -other -args -as -required script.sh
+
+  qsub -P u71 -lstorage=scratch/u71+gdata/u71,jobfs=300GB -more -other -args -as -required script2.sh
+  ```
+
+In an effort to keep sample commands short, but still executable, this document makes use of the former format.
+
 ### Part 1: Taxonomy database generation
 
 #### Code files
@@ -30,6 +68,7 @@ cd ..
 ### Part 2: Accession -> GI lookup
 
 ```bash
+qsub $COMMON_QSUB_ARGS -l walltime=1:00:00,mem=190G,ncpus=48,wd -j oe -N 02-sort-GbAccList.sh <<EOF
 #!/bin/bash
 GBACCLIST=GbAccList.0602.2019
 wget https://ftp.ncbi.nih.gov/genbank/livelists/${GBACCLIST}.gz
@@ -42,6 +81,7 @@ wget https://ftp.ncbi.nih.gov/genbank/livelists/${GBACCLIST}.gz
 # perform an external sort, requiring space in $TMPDIR (e.g. -l jobfs=150GB)
 pigz -dc "${GBACCLIST}.gz" |
   sort -t, -k1,1 --parallel=32 --buffer-size=110G > "${GBACCLIST}.sort"
+EOF
 ```
 
 ### Part 3: Genbank division download
@@ -116,7 +156,7 @@ Parameters:
 Expected `qsub` usage:
 
 ```bash
-qsub -l walltime=4:00:00,mem=48G,ncpus=48,wd -j oe -N 05-genbank-fasta-nucleo.sh <<EOF
+qsub $COMMON_QSUB_ARGS -l walltime=4:00:00,mem=48G,ncpus=48,wd -j oe -N 05-genbank-fasta-nucleo.sh <<EOF
   source /scratch/u71/sy0928/tmp/virmap/activate.sh
   ./05-genbank-fasta-nucleo.sh path/to/sorted/GbAccList path/to/genbank/divisions
 EOF
@@ -160,7 +200,7 @@ Parameters:
 Expected `qsub` usage:
 
 ```bash
-qsub -l walltime=4:00:00,mem=48G,ncpus=48,wd -j oe -N 05-genbank-fasta-protein.sh <<EOF
+qsub $COMMON_QSUB_ARGS -l walltime=4:00:00,mem=48G,ncpus=48,wd -j oe -N 05-genbank-fasta-protein.sh <<EOF
   source /scratch/u71/sy0928/tmp/virmap/activate.sh
   ./05-genbank-fasta-protein.sh path/to/sorted/GbAccList path/to/genbank/divisions
 EOF
@@ -348,7 +388,7 @@ Also accepts parameters via `GENBANK_NUC`, `DEST_DB`, `NCPUS` environment variab
 Expected `qsub` usage (cd'd to `10-helper-scripts`):
 
 ```bash
-qsub -l walltime=6:00:00,mem=80G,ncpus=48,wd -j oe -N 80-construct-kraken2.sh <<EOF
+qsub $COMMON_QSUB_ARGS -l walltime=6:00:00,mem=80G,ncpus=48,wd -j oe -N 80-construct-kraken2.sh <<EOF
   source /scratch/u71/sy0928/tmp/virmap/activate.sh
   ./80-construct-kraken2.sh /path/to/genbank/nucleotide/fasta ./krakenDb
 EOF
