@@ -224,3 +224,55 @@ which megahit
 # This should return:
 # $MINICONDA_DIR/envs/virmap/bin/megahit
 ```
+
+### VirMAP wrapper script
+
+A wrapper script `virmap_wrapper.sh` is provided in this repository, which can:
+
+* Store common parameters (e.g. database paths) in a config file `virmap_config.sh`
+* Perform database parameter sanity checks
+* Automatically setup the environment (sources `activate.sh`)
+
+#### Setup
+
+```bash
+# Copy the wrapper script into the directory where we installed VirMAP
+cp -s virmap_wrapper.sh "$INSTALL_DIR/"
+
+# Run the wrapper once to generate a template config file
+"$INSTALL_DIR/virmap_wrapper.sh"
+
+# Fill the config file with database paths
+edit "$INSTALL_DIR/virmap_config.sh"
+```
+
+#### Sample usage
+
+##### Without wrapper script
+
+```bash
+qsub -P u71 -q normal -l walltime=6:00:00,mem=48G,ncpus=12,wd,jobfs=100GB,storage=scratch/u71+gdata/u71 -joe <<EOF
+    source $INSTALL_DIR/activate.sh
+    Virmap.pl \
+        --readUnpaired "/path/to/my/sample/.fastq" \
+        --outputDir "/path/to/my/sample/output_dir" \
+        --tmp "/path/to/my/sample/output_tmp" `# Optional` \
+        --sampleName "sample_name" \
+        --threads "48" \
+        --gbBlastx "/g/data1a/u71/VirMap/191205-gbblastx.dmnd" \
+        --gbBlastn "/g/data1a/u71/VirMap/191205-gbBlastn/191205-gbBlastn" \
+        --virBbmap "/g/data1a/u71/VirMap/191205-virBbmap" \
+        --virDmnd "/g/data1a/u71/VirMap/191205-virdiamond.dmnd" \
+        --taxaJson "/g/data1a/u71/VirMap/taxaJson.dat"
+EOF
+```
+
+##### With wrapper script
+
+```bash
+cd /path/to/store/output
+qsub -P u71 -q normal -l walltime=6:00:00,mem=48G,ncpus=12,wd,jobfs=100GB,storage=scratch/u71+gdata/u71 -joe -- \
+    $INSTALL_DIR/virmap_wrapper.sh \
+        --readUnpaired "/path/to/my/sample/.fastq" \
+        --sampleName "sample_name"
+```
