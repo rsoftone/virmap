@@ -254,7 +254,7 @@ edit "$INSTALL_DIR/virmap_config.sh"
 qsub -P u71 -q normal -l walltime=6:00:00,mem=48G,ncpus=12,wd,jobfs=100GB,storage=scratch/u71+gdata/u71 -joe <<EOF
     source $INSTALL_DIR/activate.sh
     Virmap.pl \
-        --readUnpaired "/path/to/my/sample/.fastq" \
+        --readUnpaired "/path/to/my/sample.fastq" \
         --outputDir "/path/to/my/sample/output_dir" \
         --tmp "/path/to/my/sample/output_tmp" `# Optional` \
         --sampleName "sample_name" \
