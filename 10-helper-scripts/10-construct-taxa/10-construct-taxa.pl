@@ -99,6 +99,12 @@ sub loadNames {
 		if ( $nameClass eq "scientific name" ) {
 			$names->{$taxId} = $nameTxt;
 		}
+
+		if ( exists $merged->{$taxId} ) {
+			foreach my $oldTaxId ( @{ $merged->{$taxId} } ) {
+				$names->{$oldTaxId} = $nameTxt;
+			}
+		}
 	}
 
 	close $fh;
