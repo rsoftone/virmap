@@ -57,6 +57,15 @@ if [[ -z "${SORTED_GB_ACC_LIST:-}" ]] || [[ -z "${GENBANKPATH:-}" ]]; then
     GENBANKPATH="$2"
 fi
 
+# Copy the GB-Acc mapping to ram as we need to search the entire file for each entry
+MEM_SORTED_GB_ACC_LIST=$(mktemp -up /dev/shm)
+if [[ "$SORTED_GB_ACC_LIST" = *.gz ]]; then
+    echo "Extracting $SORTED_GB_ACC_LIST into $MEM_SORTED_GB_ACC_LIST"
+    pigz -dcp "$THREADS" "$SORTED_GB_ACC_LIST" > "$MEM_SORTED_GB_ACC_LIST"
+else
+    rsync -avP "$SORTED_GB_ACC_LIST" "$MEM_SORTED_GB_ACC_LIST"
+fi
+
 function process() {
     local div_file=$GENBANKPATH/$1
     local out_file=$PREFPATH/$(echo "$1" | sed "s=.seq.gz$=.fasta=g")
@@ -67,11 +76,11 @@ function process() {
     fi
 
     set -e
-    perl "$SCRIPT_DIR/03-hash.pl" "$SORTED_GB_ACC_LIST" <(pigz -dc "$div_file") >"${out_file}.part"
+    perl "$SCRIPT_DIR/03-hash.pl" "$MEM_SORTED_GB_ACC_LIST" <(pigz -dc "$div_file") >"${out_file}.part"
     mv "${out_file}.part" "${out_file}"
 }
 export -f process
-export PREFPATH GENBANKPATH SORTED_GB_ACC_LIST SCRIPT_DIR
+export PREFPATH GENBANKPATH MEM_SORTED_GB_ACC_LIST SCRIPT_DIR
 
 # sort by filesize descending, ideally would sort on head -n 8 | tail -n 1 | tr -s ' ' | cut -d ' ' -f 7
 function get_gb_divs() {
@@ -101,4 +110,5 @@ else
         xargs -tI '{}' sh -c 'process {}'
 fi
 
+rm "$MEM_SORTED_GB_ACC_LIST"
 echo "Finished!"

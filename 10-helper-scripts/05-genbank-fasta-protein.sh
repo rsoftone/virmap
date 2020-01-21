@@ -33,7 +33,12 @@ fi
 
 # Copy the GB-Acc mapping to ram as we need to search the entire file for each entry
 MEM_SORTED_GB_ACC_LIST=$(mktemp -up /dev/shm)
-rsync -avP "$SORTED_GB_ACC_LIST" "$MEM_SORTED_GB_ACC_LIST"
+if [[ "$SORTED_GB_ACC_LIST" = *.gz ]]; then
+    echo "Extracting $SORTED_GB_ACC_LIST into $MEM_SORTED_GB_ACC_LIST"
+    pigz -dcp "$THREADS" "$SORTED_GB_ACC_LIST" > "$MEM_SORTED_GB_ACC_LIST"
+else
+    rsync -avP "$SORTED_GB_ACC_LIST" "$MEM_SORTED_GB_ACC_LIST"
+fi
 
 function process() {
     local div_file=$GENBANKPATH/$1
