@@ -224,6 +224,9 @@ fi
 
 export OMP_NUM_THREADS=$THREADS
 
+LOG_FN="${RUN_OUTPUT}.log"
+exec 2> >(tee -a "$LOG_FN" >/dev/fd/2) 1> >(tee -a "$LOG_FN" >/dev/fd/1)
+
 Virmap.pl \
     "${extra_args[@]}" \
     "${ORIGINAL_ARGS[@]}"
