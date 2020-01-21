@@ -93,6 +93,10 @@ function get_gb_divs() {
         awk "(NR + $GROUP_INDEX) % $NUM_GROUPS == 0"
 }
 
+if [[ -n "${NUM_GROUPS:-}" ]]; then
+    echo "[ ] Group ${GROUP_INDEX:-0} of ${NUM_GROUPS:-1}"
+fi
+
 if command -v parallel >/dev/null 2>/dev/null; then
     get_gb_divs |
         parallel -j"$THREADS" -tI'{}' process {}

@@ -1,9 +1,32 @@
-#!/bin/bash
+#!/usr/bin/env bash
+###########################################################################
+#  Copyright 2019 University of New South Wales
+#
+#  Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+#
+###########################################################################
+#
 #PBS -l ncpus=48
 #PBS -l mem=48gb
 #PBS -l walltime=04:00:00
 #PBS -l wd
 #PBS -j oe
+#
+# 05-genbank-fasta-protein.sh
+#
+function usage() {
+    printf "\nUsage: ./05-genbank-fasta-protein.sh path/to/sorted/GbAccList path/to/genbank/divisions [threads]\n"
+}
 #
 # Assumes you have run the script in the previous section Part 3: Genbank division download
 #
@@ -13,7 +36,10 @@
 ##
 ## Output directory for .fasta file: converted/protein
 ##
-cd "${PBS_O_WORKDIR}"
+
+set -o errexit
+set -o nounset
+set -o pipefail
 
 if [[ $# -eq 0 ]] && { [[ -z "${SORTED_GB_ACC_LIST:-}" ]] || [[ -z "${GENBANKPATH:-}" ]]; }; then
     usage
@@ -66,6 +92,10 @@ function get_gb_divs() {
         xargs -I'{}' basename '{}' |
         awk "(NR + $GROUP_INDEX) % $NUM_GROUPS == 0"
 }
+
+if [[ -n "${NUM_GROUPS:-}" ]]; then
+    echo "[ ] Group ${GROUP_INDEX:-0} of ${NUM_GROUPS:-1}"
+fi
 
 if command -v parallel >/dev/null 2>/dev/null; then
     get_gb_divs |
