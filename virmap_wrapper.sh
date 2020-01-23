@@ -160,6 +160,10 @@ while [ $# -ge 1 ]; do
         TAXA_JSON="${2:-}"
         shift
         ;;
+    --readUnpaired | --readF | --readR | --interleaved)
+        verify_exists_file "$1" "${2:-}"
+        shift
+        ;;
     esac
 
     shift
