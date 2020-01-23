@@ -68,7 +68,7 @@ cd ..
 ### Part 2: Accession -> GI lookup
 
 ```bash
-qsub $COMMON_QSUB_ARGS -l walltime=1:00:00,mem=190G,ncpus=48,wd -j oe -N 02-sort-GbAccList.sh <<EOF
+qsub $COMMON_QSUB_ARGS -l walltime=1:00:00,mem=32G,ncpus=8,wd -j oe -N 02-sort-GbAccList.sh <<EOF
 #!/bin/bash
 GBACCLIST=GbAccList.0602.2019
 wget https://ftp.ncbi.nih.gov/genbank/livelists/${GBACCLIST}.gz
@@ -80,7 +80,7 @@ wget https://ftp.ncbi.nih.gov/genbank/livelists/${GBACCLIST}.gz
 # N.B. On Gadi: Don't forget to request sufficient jobfs, as sort will
 # perform an external sort, requiring space in $TMPDIR (e.g. -l jobfs=150GB)
 pigz -dc "${GBACCLIST}.gz" |
-  sort -t, -k1,1 --parallel=32 --buffer-size=110G > "${GBACCLIST}.sort"
+  sort --parallel=8 --buffer-size=30G > "${GBACCLIST}.sort"
 EOF
 ```
 
