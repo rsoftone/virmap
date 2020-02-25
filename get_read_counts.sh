@@ -15,8 +15,7 @@ EOF
 }
 #
 # Description:
-#     Helper script for building a Diamond database from FASTA formatted
-#     Genbank Protein divisions listed below.
+#     Obtain counts of reads from virmap output in the original input sequence
 
 ###########################################################################
 #  Copyright 2019 University of New South Wales
