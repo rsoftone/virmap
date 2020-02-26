@@ -39,6 +39,10 @@ wget https://repo.anaconda.com/miniconda/Miniconda3-4.5.11-Linux-x86_64.sh -O $T
 
 # sudo yum install -y openssl-devel
 
+# If using Ubuntu Server 18:
+sudo apt-get install build-essential openssl libssl-dev zlib1g-dev
+
+
 mkdir $INSTALL_DIR
 cd $INSTALL_DIR
 source $MINICONDA_DIR/etc/profile.d/conda.sh
@@ -150,6 +154,7 @@ EOF
 #
 #
 
+conda activate virmap
 export PERL5LIB=$INSTALL_DIR/lib/perl5
 export PATH=$INSTALL_DIR/virmap:$INSTALL_DIR/bin:$PATH
 
@@ -164,6 +169,8 @@ cpanm --local-lib=$INSTALL_DIR --force RocksDB
 #
 # For other dependencies
 #
+
+
 
 cpanm --local-lib=$INSTALL_DIR OpenSourceOrg::API
 
