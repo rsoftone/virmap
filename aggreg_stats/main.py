@@ -33,11 +33,23 @@ class AggregateStatsResults(object):
 
     def add_sample_results(self, directory: str):
         logger.info("Loading sample from %r", directory)
-        self.samples.append(SampleResults(directory))
+
+        try:
+            sample = SampleResults(directory)
+
+            # Force loading of sample.final.fa so we can skip this sample if there's an error (e.g. it's missing)
+            # noinspection PyStatementEffect
+            sample.final_output
+
+            self.samples.append(sample)
+        except Exception as e:
+            logger.exception("Failed to load sample %r", directory, exc_info=e)
 
     def execute(self):
         assert self.out_filename is not None
-        assert self.samples
+        if not self.samples:
+            logger.error("No samples!")
+            return
 
         aggreg_stats = AggregStatsWorkbook(self.out_filename)
         aggreg_stats.process(self.samples)
