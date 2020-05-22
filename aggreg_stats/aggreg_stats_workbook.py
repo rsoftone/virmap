@@ -1,5 +1,4 @@
-###########################################################################
-#  Copyright 2019 University of New South Wales
+#  Copyright 2020 University of New South Wales
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -12,79 +11,21 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-#
-###########################################################################
 
-import os
-import re
-import string
 from collections import Counter
+from typing import Iterable
 
 import xlsxwriter
 
-from virmapTools.analyse_times import load_tax_tree, resolve_taxid
+from constants import *
+from sample_results import SampleResults
+from util import get_logger
 
-PAT_TIME = re.compile(
-    r"TIME .*? (.*?): ([\d.]+) seconds, ([\d.]+) CPU seconds, ([\d.]+) CPU ratio",
-    re.IGNORECASE,
-)
-PAT_RESULTS = re.compile(
-    r"taxid=(\d+), size=(\d+) \| ([^>\n]*)(?: > ([^>\n]*)(?: > ([^>\n]*)(?: > ([^>\n]*)(?: > ([^>\n]*)(?: > ([^>\n]*)(?: > ([^>\n]*))?)?)?)?)?)?$",
-    re.MULTILINE,
-)
-BENIGN_ERRORS = (
-    re.compile(r"Use of uninitialized value \$nextLine in split .*? line 1857,"),
-    re.compile(
-        r"Use of uninitialized value \$currentHead in substitution .*? line 1859,"
-    ),
-    re.compile(r"Use of uninitialized value \$currentHead in string .*? line 1865,"),
-    re.compile(r"Use of uninitialized value \$currentHead in string .*? line 1866,"),
-    re.compile(r"Use of uninitialized value \$currentHead in string .*? line 1873,"),
-    re.compile(r"Use of uninitialized value \$currentHead in hash .*? line 1876,"),
-    re.compile(r"Use of uninitialized value \$head in string .*? line 1900,"),
-    re.compile(
-        r"Use of uninitialized value \$sem in concatenation \(\.\) or string at .*? line 395."
-    ),
-    # re.compile(r"Use of uninitialized value in numeric comparison \(<=>\) .*? line 1678."),
-)
-COLNAMES = string.ascii_uppercase
-TIME_CATEGORIES = (
-    "decompress",
-    "dereplicate",
-    "normalize",
-    "bbmap to virus",
-    "diamond to virus",
-    "construct superscaffolds",
-    "megahit assembly",
-    "tadpole assembly",
-    "dedupe assembly",
-    "merge assembly",
-    "diamond filter map",
-    "blastn filter map",
-    "filter contigs",
-    "iterative improvement",
-    "self align and quantify",
-    "blastn full",
-    "diamond full",
-    "determine taxonomy",
-    "Overall Virmap time",
-)
-VIRMAP_TAX_FLAGS = {
-    "weak",
-    "highDivergence",
-    "HighOthers",
-    "highUnknownInformation",
-    "potentialMisannotations",
-    "merged",
-}
-PAT_TAG = re.compile(r"\b(\w+)=1\b")
-PAT_TAX_ID = re.compile(r"\btaxId=(\d+);(?:.*?;)?size=(\d+)", re.IGNORECASE)
+logger = get_logger(__name__)
 
 
-class AggregStats:
-    def __init__(self, out_fn: str, folder: str):
-        self.folder = folder
-
+class AggregStatsWorkbook:
+    def __init__(self, out_fn: str):
         self.all_walltimes = {}
         self.all_cputimes = {}
         self.all_cpuratios = {}
@@ -322,89 +263,53 @@ class AggregStats:
 
             ws.autofilter(0, 0, len(tax_data), len(tax_column_headers) + 4)
 
-    def process(self):
-        for sample_run in os.listdir(self.folder):
-            print(sample_run)
-            sample_dir = os.path.join(self.folder, sample_run)
+    def process(self, samples: Iterable[SampleResults]):
+        logger.info("Building workbook")
 
-            log_file = None
-            sample_name = None
+        for sample in samples:
+            logger.debug(sample)
 
-            for dirpath, _, filenames in os.walk(sample_dir):
-                for fn in filenames:
-                    if fn.endswith(".log") and fn != 'MegaHit.log':
-                        sample_name = fn[:-4]
-                        log_file = os.path.join(dirpath, fn)
-
-            # Extract times
-            walltimes = [None for _ in TIME_CATEGORIES]
-            cputimes = [None for _ in TIME_CATEGORIES]
-            cpuratios = [None for _ in TIME_CATEGORIES]
-
-            with open(log_file, "r") as f:
-                for match in PAT_TIME.finditer(f.read()):
-                    # print(match.groups())
-                    index = TIME_CATEGORIES.index(match.group(1))
-
-                    walltimes[index] = float(match.group(2))
-                    cputimes[index] = float(match.group(3))
-                    cpuratios[index] = float(match.group(4))
-
-            self.all_walltimes[sample_run] = walltimes
-            self.all_cputimes[sample_run] = cputimes
-            self.all_cpuratios[sample_run] = cpuratios
-            tax_data = self.all_tax_data[sample_run] = []
+            walltimes, cputimes, cpuratios = sample.simple_timing_info
+            self.all_walltimes[sample.run_name] = walltimes
+            self.all_cputimes[sample.run_name] = cputimes
+            self.all_cpuratios[sample.run_name] = cpuratios
+            tax_data = self.all_tax_data[sample.run_name] = []
             flag_counts = Counter()
-            summary = self.all_summary[sample_run] = [0, 0, 0, 0, 0, 0, flag_counts]
+            summary = self.all_summary[sample.run_name] = [0, 0, 0, 0, 0, 0, flag_counts]
 
             # ["Benign errors", "Critcal errors", "Killed count", "Output sequences", "Unique output taxids"],
 
-            # Extract errors
-            with open(os.path.join(sample_dir, "errors.txt"), "r") as f:
-                for line in f:
-                    line = line.strip()
+            for line in sample.warnings_and_errors:
+                line = line.strip()
 
-                    if any(map(lambda x: x.search(line), BENIGN_ERRORS)):
-                        summary[0] += 1  # benign
-                    else:
-                        summary[1] += 1  # critical
-                        print(line)
+                if any(map(lambda x: x.search(line), BENIGN_ERRORS)):
+                    summary[0] += 1  # benign
+                else:
+                    summary[1] += 1  # critical
+                    # logger.warning(f'Critical error in {sample.run_name!r}: {line!r}')
 
-                    if "Killed" in line:
-                        summary[2] += 1  # killed
+                if "Killed" in line:
+                    summary[2] += 1  # killed
 
             # Extract results
-            with open(os.path.join(sample_dir, f"{sample_name}.final.fa"), "r") as f:
-                for line in f:
-                    line = line.strip()
-
-                    tax_match = PAT_TAX_ID.search(line)
-                    print(tax_match)
-                    if tax_match:
-                        flags = set(PAT_TAG.findall(line))
-
-                        for flag in flags:
-                            flag_counts[flag] += 1
-                        tax_id, tax_size = int(tax_match.group(1)), int(tax_match.group(2))
-                        print(tax_id, tax_size, flags)
-
-                        taxonomy = resolve_taxid(tax_id).split(' > ')
-                        tax_data.append([tax_id, tax_size, flags, taxonomy])
+            for entry in sample.final_output:
+                tax_data.append([entry.tax_id, entry.tax_size, entry.flags, entry.taxonomy])
 
             summary[3] = len(tax_data)
             summary[4] = len(set(map(lambda x: x[0], tax_data)))
             summary[5] = len(list(filter(lambda x: x[0] == 10239, tax_data)))
 
+        logger.info("Adding summary")
         self.dump_summary()
+
+        logger.info("Adding time stats")
         self.dump_time_stats()
+
+        logger.info("Adding taxonomy stats")
         self.dump_tax_stats()
 
+        logger.info("Saving workbook")
         self.close()
 
     def close(self):
         self.workbook.close()
-
-
-if __name__ == "__main__":
-    load_tax_tree()
-    AggregStats("aggreg_stats_vm_19.xlsx", "./vm_19").process()

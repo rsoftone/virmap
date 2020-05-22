@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/gh/spiermar/d3-flame-graph@2.0.5/dist/d3-flamegraph.css" rel="stylesheet"
+          type="text/css">
+
+    <style>
+    /* Space out content a bit */
+    body {
+      padding-top: 20px;
+      padding-bottom: 20px;
+    }
+
+    /* Custom page header */
+    .header {
+      padding-bottom: 20px;
+      padding-right: 15px;
+      padding-left: 15px;
+      border-bottom: 1px solid #e5e5e5;
+    }
+
+    /* Make the masthead heading the same height as the navigation */
+    .header h3 {
+      margin-top: 0;
+      margin-bottom: 0;
+      line-height: 40px;
+    }
+
+    /* Customize container */
+    .container {
+      max-width: 990px;
+    }
+
+    </style>
+
+    <title>{TEMPLATE_TITLE}</title>
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+<div class="container-fluid" style="width: 1280px">
+    <div class="header clearfix">
+        <nav>
+            <div class="pull-right">
+                <form class="form-inline" id="form">
+                    <a class="btn" href="javascript: resetZoom();">Reset zoom</a>
+                    <a class="btn" href="javascript: clear();">Clear</a>
+                    <div class="form-group">
+                        <input class="form-control" id="term" type="text">
+                    </div>
+                    <a class="btn btn-primary" href="javascript: search();">Search</a>
+                </form>
+            </div>
+        </nav>
+        <h3 class="text-muted">{TEMPLATE_TITLE}</h3>
+    </div>
+    <div id="chart">
+    </div>
+    <hr>
+    <div id="details">
+    </div>
+</div>
+
+<!-- D3.js -->
+<script charset="utf-8" src="https://d3js.org/d3.v4.min.js"></script>
+
+<!-- d3-tip -->
+<script src=https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.9.1/d3-tip.min.js type="text/javascript"></script> <!--
+    d3-flamegraph -->
+<script src="https://cdn.jsdelivr.net/gh/spiermar/d3-flame-graph@2.0.5/dist/d3-flamegraph.min.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+    var labelHandler = function (d) {
+      var date = new Date(null);
+      date.setSeconds(d.value);
+      var hoursMins = date.toISOString().substr(11, 8);
+
+      return d.data.name + ' (' + ((100 * (d.x1 - d.x0)).toFixed(2)) + '%, ' + hoursMins + ' walltime)'
+    }
+
+    var flameGraph = d3.flamegraph()
+      .width(960)
+      .width(1280)
+      .cellHeight(18)
+      .transitionDuration(750)
+      .transitionEase(d3.easeCubic)
+      // .title({ TEMPLATE_JS_TITLE })
+      .onClick(onClick)
+      .differential(false)
+      .selfValue(false)
+      .setLabelHandler(labelHandler);
+
+
+    // Example on how to use custom tooltips using d3-tip.
+    // var tip = d3.tip()
+    //   .direction("s")
+    //   .offset([8, 0])
+    //   .attr('class', 'd3-flame-graph-tip')
+    //   .html(function(d) { return "name: " + d.data.name + ", value: " + d.data.value; });
+
+    // flameGraph.tooltip(tip);
+
+    var details = document.getElementById("details");
+    flameGraph.setDetailsElement(details);
+
+    // Example on how to use custom labels
+    // var label = function(d) {
+    //  return "name: " + d.name + ", value: " + d.value;
+    // }
+    // flameGraph.label(label);
+
+    // Example of how to set fixed chart height
+    // flameGraph.height(540);
+
+    d3.select("#chart")
+      .datum({ TEMPLATE_DATA })
+      .call(flameGraph);
+
+    document.getElementById("form").addEventListener("submit", function (event) {
+      event.preventDefault();
+      search();
+    });
+
+    function search() {
+      var term = document.getElementById("term").value;
+      flameGraph.search(term);
+    }
+
+    function clear() {
+      document.getElementById('term').value = '';
+      flameGraph.clear();
+    }
+
+    function resetZoom() {
+      flameGraph.resetZoom();
+    }
+
+    function onClick(d) {
+      console.info("Clicked on " + d.data.name);
+    }
+
+</script>
+</body>
+
+</html>
