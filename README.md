@@ -13,6 +13,8 @@ Where do I find what I'm looking for?
 
 **VirMAP parameter descriptions** - see [parameters](./parameters.md)
 
+**VirMap result aggregation script** - see [aggreg_stats](./aggreg_stats/README.md)
+
 ### Installation and Setup
 **Important:** Complete the installation steps below first.  Then proceed to https://github.com/rsoftone/virmap/tree/master/10-helper-scripts to setup databases (from NCBI Taxonomy and Genbank)
   
