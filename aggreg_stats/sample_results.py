@@ -16,7 +16,11 @@ import os
 import re
 import shutil
 import subprocess
-from functools import cached_property
+try:
+    from functools import cached_property
+except ImportError:
+    # TODO FIXME
+    cached_property = property
 from typing import List, Optional, Set, Tuple
 
 from analyse_times import Node, build_timing_tree, dump_timing_tree
