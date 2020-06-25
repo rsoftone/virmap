@@ -152,9 +152,9 @@ class SampleResults(object):
             for match in PAT_TIME.finditer(f.read()):
                 index = TIME_CATEGORIES.index(match.group(1))
 
-                walltimes[index] = float(match.group(2))
-                cputimes[index] = float(match.group(3))
-                cpuratios[index] = float(match.group(4))
+                walltimes[index] = float(match.group(2)) if match.group(2) else None
+                cputimes[index] = float(match.group(3)) if match.group(3) else None
+                cpuratios[index] = float(match.group(4)) if match.group(4) else None
 
         return walltimes, cputimes, cpuratios
 

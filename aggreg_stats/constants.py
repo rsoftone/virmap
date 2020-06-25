@@ -20,7 +20,7 @@ import string
 
 # Pattern matching timing info VirMap outputs
 PAT_TIME = re.compile(
-    r"TIME .*? (.*?): ([\d.]+) seconds, ([\d.]+) CPU seconds, ([\d.]+) CPU ratio",
+    r"TIME .*? (.*?): ([\d.]+) seconds(?:, ([\d.]+) CPU seconds, ([\d.]+) CPU ratio)?",
     re.IGNORECASE,
 )
 PAT_RESULTS = re.compile(

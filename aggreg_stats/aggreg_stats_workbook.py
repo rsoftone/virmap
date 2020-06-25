@@ -214,25 +214,28 @@ class AggregStatsWorkbook:
             )
 
     def dump_time_stats(self):
-        ws_walltimes = self.workbook.add_worksheet("Walltimes")
-        row = self.write_sample_dict(
-            ws_walltimes, 0, 0, self.all_walltimes, ("Sample",) + TIME_CATEGORIES
-        )
+        if any(y for x in self.all_walltimes.values() for y in x):
+            ws_walltimes = self.workbook.add_worksheet("Walltimes")
+            self.write_sample_dict(
+                ws_walltimes, 0, 0, self.all_walltimes, ("Sample",) + TIME_CATEGORIES
+            )
 
-        ws_cpuratio = self.workbook.add_worksheet("CPU ratio")
-        row = self.write_sample_dict(
-            ws_cpuratio,
-            0,
-            0,
-            self.all_cpuratios,
-            ("Sample",) + TIME_CATEGORIES,
-            no_time=True,
-        )
+        if any(y for x in self.all_cpuratios.values() for y in x):
+            ws_cpuratio = self.workbook.add_worksheet("CPU ratio")
+            self.write_sample_dict(
+                ws_cpuratio,
+                0,
+                0,
+                self.all_cpuratios,
+                ("Sample",) + TIME_CATEGORIES,
+                no_time=True,
+            )
 
-        ws_cputime = self.workbook.add_worksheet("CPU time")
-        row = self.write_sample_dict(
-            ws_cputime, 0, 0, self.all_cputimes, ("Sample",) + TIME_CATEGORIES
-        )
+        if any(y for x in self.all_cputimes.values() for y in x):
+            ws_cputime = self.workbook.add_worksheet("CPU time")
+            self.write_sample_dict(
+                ws_cputime, 0, 0, self.all_cputimes, ("Sample",) + TIME_CATEGORIES
+            )
 
     def dump_tax_stats(self):
         all_seq_flags = sorted(list(VIRMAP_TAX_FLAGS))
