@@ -16,6 +16,8 @@ import os
 import re
 import shutil
 import subprocess
+from distutils.dir_util import copy_tree
+
 try:
     from functools import cached_property
 except ImportError:
@@ -208,10 +210,9 @@ class SampleResults(object):
         return results
 
     def _copy_log_files(self, dest_dir: str):
-        shutil.copytree(
+        copy_tree(
             self.target,
             os.path.join(dest_dir, os.path.basename(self.target)),
-            dirs_exist_ok=True,
         )
         shutil.move(
             os.path.join(
@@ -220,10 +221,9 @@ class SampleResults(object):
             os.path.join(dest_dir, f"{self.name}.final.fa"),
         )
 
-        shutil.copytree(
+        copy_tree(
             self.target_tmp,
             os.path.join(dest_dir, os.path.basename(self.target_tmp)),
-            dirs_exist_ok=True,
         )
 
         file_map_fn = os.path.join(dest_dir, "file_map.dot")
