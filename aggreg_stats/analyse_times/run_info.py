@@ -130,9 +130,9 @@ def build_timing_tree(sample):
 
                 tree.append(n)
 
-    if tree.time is None and sample.pbs_log_fn:
+    if tree.time is None and sample.pbs_log_filename:
         # try to find used walltime appended by pbs
-        with open(sample.pbs_log_fn, "r") as f:
+        with open(sample.pbs_log_filename, "r") as f:
             match = PAT_PBS_WALLTIME.search(f.read())
             if match is not None:
                 tree.name = "root - DID NOT COMPLETE"
