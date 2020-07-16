@@ -83,7 +83,7 @@ done < gbvrl.txt
 **gbphage** (3 files as at June 2019, ~0.4 GB total size)
 
 ```bash
-grep gbphage .listing | sed 's/.*gbphage/gbphage/g' | sed 's/\n//g' > gbphage.txt
+grep gbphg .listing | sed 's/.*gbphg/gbphg/g' | sed 's/\n//g' > gbphg.txt
 dos2unix gbphage.txt
 
 while  read -r aseq
@@ -93,7 +93,7 @@ do
     -k1 -Tr -l800m \
     anonftp@ftp.ncbi.nlm.nih.gov:/genbank/${aseq} /destinationDir/.  
 
-done < gbphage.txt 
+done < gbphg.txt 
 ```
 
 ## Comprehensive General Purpose Database ##
