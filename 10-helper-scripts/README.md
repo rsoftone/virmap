@@ -99,10 +99,10 @@ export GENBANKPATH=genbank-ref
 mkdir -p $GENBANKPATH
 
 #
-# Retrieve the list in ftp://ftp.ncbi.nlm.nih.gov/genbank
+# Retrieve the list in ftp://ftp.ncbi.nlm.nih.gov/genbank/
 #
 
-wget --no-remove-listing ftp://ftp.ncbi.nlm.nih.gov/genbank
+wget --no-remove-listing ftp://ftp.ncbi.nlm.nih.gov/genbank/
 
 # See the resultant file named .listing
 
