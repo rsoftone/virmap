@@ -64,9 +64,37 @@ wget --no-remove-listing ftp://ftp.ncbi.nlm.nih.gov/genbank
 
 Genbank Divisions used:
 
-gbvrl (33 files as at June 2019, ~3 GB total size)
+**gbvrl** (33 files as at June 2019, ~3 GB total size)
 
-gbphage (3 files as at June 2019, ~0.4 GB total size)
+```bash
+grep gbvrl .listing | sed 's/.*gbvrl/gbvrl/g' | sed 's/\n//g' > gbvrl.txt
+dos2unix gbvrl.txt
+
+while  read -r aseq
+do
+    ~/.aspera/connect/bin/ascp \
+    -i ~/.aspera/connect/etc/asperaweb_id_dsa.openssh \
+    -k1 -Tr -l800m \
+    anonftp@ftp.ncbi.nlm.nih.gov:/genbank/${aseq} /destinationDir/.  
+
+done < gbvrl.txt 
+```
+
+**gbphage** (3 files as at June 2019, ~0.4 GB total size)
+
+```bash
+grep gbphage .listing | sed 's/.*gbphage/gbphage/g' | sed 's/\n//g' > gbphage.txt
+dos2unix gbphage.txt
+
+while  read -r aseq
+do
+    ~/.aspera/connect/bin/ascp \
+    -i ~/.aspera/connect/etc/asperaweb_id_dsa.openssh \
+    -k1 -Tr -l800m \
+    anonftp@ftp.ncbi.nlm.nih.gov:/genbank/${aseq} /destinationDir/.  
+
+done < gbphage.txt 
+```
 
 ## Comprehensive General Purpose Database ##
 
