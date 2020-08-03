@@ -6,7 +6,8 @@
 # Download and install Miniconda
 #
 
-MY_TMPDIR=/g/data/u71/igy/tmp
+## Please replace $MY_TMPDIR with the location of the directory where you want to Virmap source, executables and conda environment
+MY_TMPDIR=/g/data/projectID/subdirectory   #/g/data/projectID/igy/tmp
 
 ## Igy add this line to change the TMPDIR
 export TMPDIR=$MY_TMPDIR
