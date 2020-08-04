@@ -18,20 +18,33 @@ Where do I find what I'm looking for?
 ### Installation and Setup
 **Important:** Complete the installation steps below first.  Then proceed to https://github.com/rsoftone/virmap/tree/master/10-helper-scripts to setup databases (from NCBI Taxonomy and Genbank)
 
-  
+
+Step 1: Clone this repository as virmap_install using “git clone https://github.com/rsoftone/virmap.git virmap_install”. This will give you the installation related scripts and will avoid the confusion of everything being called virmap. On Katana you should clone the repository into your scratch directory.
+
+```
+git clone https://github.com/rsoftone/virmap.git virmap_install  
+```
+
+Step 2: Change into the directory virmap_install and run the installation script
+
+**Installation on Katana**
+```
+cd virmap_install
+bash install_virmap_katana.sh
+```
+
+**Installation on Gadi**
+```
+cd virmap_install
+bash install_virmap_gadi.sh
+```
+
+**The following is a description of what happens in the install script, using the Gadi installation as an example.**
 ```
 #!/bin/bash
 # Raijin specific: $TMPDIR is /short/<some-project>/<some-uid>/tmp
 # 
 # All build and installation will be prefixed in $TMPDIR
-
-
-# Clone this repository as virmap_install using “git clone https://github.com/rsoftone/virmap.git virmap_install”. 
-# This will give you the installation related scripts and will avoid the confusion of everything being called virmap. 
-# On Katana you should clone the repository into your scratch directory.
-
-git clone https://github.com/rsoftone/virmap.git virmap_install
-
 #
 # Download and install Miniconda
 #
