@@ -11,6 +11,7 @@ function find_activate() {
         readlink -e "activate.sh"
         return 0
     elif [[ -n "${INSTALL_DIR:-}" ]] && [[ -e "$INSTALL_DIR/activate.sh" ]]; then
+	echo "INSTALL_DIR=$INSTALL_DIR"
         readlink -e "$INSTALL_DIR/activate.sh"
         return 0
     elif [[ -e "$SCRIPT_DIR/activate.sh" ]]; then
