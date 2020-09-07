@@ -179,12 +179,17 @@ class SampleResults(object):
         #     *target_files,
         # ])
 
-        stdout = subprocess.check_output([
-            "grep",
-            "-nF",
-            "\n".join(PERL_DIE_MSGS.union(PERL_WARNINGS)),
-            *target_files,
-        ])
+        try:    
+            stdout = subprocess.check_output([
+                "grep",
+                "-nF",
+                "\n".join(PERL_DIE_MSGS.union(PERL_WARNINGS)),
+                *target_files,
+            ])
+        except subprocess.CalledProcessError as e:
+            if e.returncode != 1:
+                raise
+                    stdout = e.output
 
         return (stdout
                 .replace(os.path.dirname(self.base_dir).encode() + b"/", b"")
