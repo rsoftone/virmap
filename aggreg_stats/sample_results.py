@@ -188,7 +188,7 @@ class SampleResults(object):
             ])
         except subprocess.CalledProcessError as e:
             if e.returncode != 1:
-                raise
+                raise 
                     stdout = e.output
 
         return (stdout
