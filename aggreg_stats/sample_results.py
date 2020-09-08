@@ -188,7 +188,8 @@ class SampleResults(object):
             ])
         except subprocess.CalledProcessError as e:
             if e.returncode != 1:
-                raise stdout = e.output
+                raise 
+            stdout = e.output
 
         return (stdout
                 .replace(os.path.dirname(self.base_dir).encode() + b"/", b"")
